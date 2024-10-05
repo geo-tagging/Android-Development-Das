@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.dicoding.geotaggingjbg.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_maps"
+            app:destination="@id/navigation_maps" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_detail"
+            app:destination="@id/navigation_detail" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_save"
+            app:destination="@id/navigation_save" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_detail_remote"
+            app:destination="@id/navigation_detail_remote" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_camera"
+        android:name="com.dicoding.geotaggingjbg.ui.camera.CameraFragment"
+        android:label="@string/title_camera"
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_save"
+            app:destination="@id/navigation_save" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_detail_remote"
+            app:destination="@id/navigation_detail_remote" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_detail"
+            app:destination="@id/navigation_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_maps"
+        android:name="com.dicoding.geotaggingjbg.ui.maps.MapsFragment"
+        android:label="@string/title_maps"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_navigation_maps_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_save"
+        android:name="com.dicoding.geotaggingjbg.ui.save.SaveFragment"
+        android:label="fragment_save"
+        tools:layout="@layout/fragment_save" >
+        <action
+            android:id="@+id/action_navigation_save_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+        <action
+            android:id="@+id/action_navigation_save_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_detail_remote"
+        android:name="com.dicoding.geotaggingjbg.ui.detailremote.DetailRemoteFragment"
+        android:label="fragment_detail_remote"
+        tools:layout="@layout/fragment_detail_remote" >
+        <action
+            android:id="@+id/action_navigation_detail_remote_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_detail_remote_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="com.dicoding.geotaggingjbg.ui.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_navigation_detail_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_detail_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+    </fragment>
+</navigation>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="style_spinner">
+        <item name="android:background">@drawable/dropdown</item>
+        <item name="android:dropDownSelector">@android:color/transparent</item>
+        <item name="android:popupBackground">#caf0f8</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+</resources>

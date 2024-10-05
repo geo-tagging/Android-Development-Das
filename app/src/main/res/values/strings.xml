@@ -1,0 +1,213 @@
+<resources>
+    <string name="app_name">Logia</string>
+    <string name="title_home">Home</string>
+    <string name="title_camera">Camera</string>
+    <string name="title_maps">Maps</string>
+    <string name="title_save">Save</string>
+
+    <string name="cam_capture">Capture Photo</string>
+    <string name="bt_simpan">Simpan</string>
+    <string name="bt_batal">Batal</string>
+    <string name="bt_hapus">Hapus</string>
+    <string name="bt_lewat">Saya telah mengunduh data</string>
+    <string name="text_pilih">Tentukan lokasi:</string>
+
+    <string name="form_title">Lengkapi data dibawah!</string>
+    <string name="form_long">Northing</string>
+    <string name="form_lat">Easthing</string>
+    <string name="form_elev">Elevasi</string>
+    <string name="form_jentan">Jenis Tanaman</string>
+    <string name="form_lokasi">Lokasi Tanaman</string>
+    <string name="form_tahun">Tahun Tanam</string>
+    <string name="form_kegiatan">Kegiatan</string>
+    <string name="form_sk">SK PPKH</string>
+    <string name="form_status">Status</string>
+    <string name="form_tinggi">Tinggi Tanaman</string>
+    <string name="sat_tinggi">CM</string>
+    <string name="form_dia">Diameter Tanaman</string>
+    <string name="sat_dia">CM</string>
+    <string name="desc_iv">Preview Image</string>
+    <string name="id_tanaman">ID Tanaman</string>
+    <string name="form_tanggal">Tanggal Tanam</string>
+    <string name="bt_image">Ambil Gambar</string>
+
+    <string name="data_none">Seluruh data sudah di unggah</string>
+
+    <!-- Login Section -->
+    <string name="login_success">Login Successful!</string>
+    <string name="email_null_validation">Email cannot be empty</string>
+    <string name="email_valid_validaiton">Email must be valid</string>
+    <string name="password_null_validation">Password cannot be empty</string>
+    <string name="password_8_char_validation">Password must be more than 8 characters</string>
+    <string name="back">Back</string>
+
+    <!-- Login Section -->
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+
+    <string-array name="array_jentan">
+        <item>0,Pilih jenis tanaman</item>
+        <item>1,Alaban</item>
+        <item>2,Alpukat</item>
+        <item>3,Ambaratan</item>
+        <item>4,Angsana</item>
+        <item>5,Asam Jawa</item>
+        <item>6,Bakau</item>
+        <item>7,Bangkal</item>
+        <item>8,Bangkirai</item>
+        <item>9,Belangiran</item>
+        <item>10,Binuang Laki</item>
+        <item>11,Bungur</item>
+        <item>12,Cemara</item>
+        <item>13,Cempedak</item>
+        <item>14,Damar</item>
+        <item>15,Duabanga</item>
+        <item>16,Durian</item>
+        <item>17,Ficus/Beringin</item>
+        <item>18,Gaharu</item>
+        <item>19,Galam</item>
+        <item>20,Gempol</item>
+        <item>21,Glodokan Tiang</item>
+        <item>22,Jabon</item>
+        <item>23,Jambu Batu</item>
+        <item>24,Jambu Biji</item>
+        <item>25,Jambu Mete</item>
+        <item>26,Jengkol</item>
+        <item>27,Jeruk</item>
+        <item>28,Kalang Kala</item>
+        <item>29,Kaliandra</item>
+        <item>30,Kangkung Liar</item>
+        <item>31,Karamunting</item>
+        <item>32,Kasturi</item>
+        <item>33,Kayu Kuku</item>
+        <item>34,Kayu Manis</item>
+        <item>35,Kayu Putih</item>
+        <item>36,Kelapa</item>
+        <item>37,Kemiri</item>
+        <item>38,Kersen</item>
+        <item>39,Keruing</item>
+        <item>40,Ketapi</item>
+        <item>41,Lamtoro</item>
+        <item>42,Langsat</item>
+        <item>43,Lengkeng</item>
+        <item>44,Mahang</item>
+        <item>45,Mahoni</item>
+        <item>46,Mallotus</item>
+        <item>47,Mangga</item>
+        <item>48,Matoa</item>
+        <item>49,Meranti</item>
+        <item>50,Nangka</item>
+        <item>51,Nyamplung</item>
+        <item>52,Pasak Bumi</item>
+        <item>53,Petai</item>
+        <item>54,Pulai</item>
+        <item>55,Ramania</item>
+        <item>56,Rambai</item>
+        <item>57,Rambutan</item>
+        <item>58,Rotan</item>
+        <item>59,Sirsak</item>
+        <item>60,Srikaya</item>
+        <item>61,Sungkai</item>
+        <item>62,Tanjung</item>
+        <item>63,Tembesu</item>
+        <item>64,Tengkawang</item>
+        <item>65,Ulin</item>
+        <item>66,Waru Laut</item>
+        <item>67,Ylang-ylang</item>
+        <item>68,Akasia</item>
+        <item>69,Belimbing</item>
+        <item>70,Eucaliptus</item>
+        <item>71,Gamal</item>
+        <item>72,Gmelina</item>
+        <item>73,Gulinggang</item>
+        <item>74,Jarak</item>
+        <item>75,Jerpay</item>
+        <item>76,Johar</item>
+        <item>77,Kapuk</item>
+        <item>78,Karet</item>
+        <item>79,Kesambi</item>
+        <item>80,Ketapang</item>
+        <item>81,Mucuna cochincinesis</item>
+        <item>82,Pepaya</item>
+        <item>83,Pinang</item>
+        <item>84,Rumput Tifa</item>
+        <item>85,Rumput Vetiver</item>
+        <item>86,Sengon</item>
+        <item>87,Sengon Buto</item>
+        <item>88,Sepatudea</item>
+        <item>89,Sereh Wangi</item>
+        <item>90,Trembesi</item>
+        <item>91,Turi</item>
+        <item>92,Agatis</item>
+        <item>93,Akasia Bulan</item>
+        <item>94,Gelenggang</item>
+        <item>95,Kelengkeng</item>
+        <item>96,Pucuk Merah</item>
+        <item>97,Kapuk Rando</item>
+        <item>98,Sukun</item>
+    </string-array>
+
+    <string-array name="array_lokasi">
+        <item>0,Pilih lokasi</item>
+        <item>1,Body River Katal-katal</item>
+        <item>2,M1E</item>
+        <item>3,M1EE</item>
+        <item>4,M1EW</item>
+        <item>5,M1W</item>
+        <item>6,M2EE</item>
+        <item>7,M2W</item>
+        <item>8,M23 Nhy</item>
+        <item>9,M23E</item>
+        <item>10,M23E Nhy</item>
+        <item>11,M23EC</item>
+        <item>12,M23EE</item>
+        <item>13,M23EW</item>
+        <item>14,M4 Nhy</item>
+        <item>15,M45C</item>
+        <item>16,M4E</item>
+        <item>17,M4EC</item>
+        <item>18,M4EW</item>
+        <item>19,M4W</item>
+        <item>20,M5E</item>
+        <item>21,Reservoir PT BAS</item>
+        <item>22,Sediment Pond UW</item>
+        <item>23,U210</item>
+        <item>24,UCE</item>
+        <item>25,UCW</item>
+        <item>26,UE</item>
+        <item>27,UEC</item>
+        <item>28,UW</item>
+    </string-array>
+
+    <string-array name="array_kegiatan">
+        <item>0,Pilih kegiatan</item>
+        <item>1,Tanaman Baru</item>
+        <item>2,Sulaman</item>
+        <item>3,Sisipan</item>
+        <item>4,Monitoring</item>
+    </string-array>
+
+    <string-array name="array_sk">
+        <item>0,Pilih sk</item>
+        <item>1,671</item>
+        <item>2,1080</item>
+        <item>3,APL</item>
+    </string-array>
+
+    <string-array name="array_status">
+        <item>0,Pilih status</item>
+        <item>1,Hidup</item>
+        <item>2,Mati</item>
+        <item>3,Merana/Kritis</item>
+    </string-array>
+
+    <string name="bt_upload">Upload</string>
+    <string name="image_item">Image</string>
+    <string name="logo_pt_jbg">Logo PT JBG</string>
+    <string name="logo_logia">Logo Logia</string>
+    <string name="powered_by">Powered by</string>
+    <string name="upload">Upload</string>
+    <string name="logout">Logout</string>
+    <string name="pilih_lokasi">Pilih lokasi</string>
+</resources>
