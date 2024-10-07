@@ -277,9 +277,9 @@ class DetailRemoteFragment : Fragment() {
             val imageFile = uriToFile(imageUri!!, requireContext())
             // Mengurangi ukuran gambar
             val reducedFile = imageFile.reduceFileImage()
-            val resolutionFile = reduceFileSize(reducedFile, 600, 800)
+//            val resolutionFile = reduceFileSize(reducedFile, 600, 800)
             // Menetapkan URI dari file yang telah dikurangi ukurannya ke ImageView
-            reduceImageAsync(resolutionFile!!) { compressedFile ->
+            reduceImageAsync(reducedFile) { compressedFile ->
                 // Menetapkan URI dari file yang telah dikurangi ukurannya ke ImageView
                 val compressedUri = Uri.fromFile(compressedFile)
                 imageUri = compressedUri
