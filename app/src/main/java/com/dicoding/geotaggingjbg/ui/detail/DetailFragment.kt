@@ -273,7 +273,6 @@ class DetailFragment : Fragment() {
 //            val resolutionFile = reduceFileSize(reducedFile, 600, 800)
             // Menetapkan URI dari file yang telah dikurangi ukurannya ke ImageView
             reduceImageAsync(reducedFile) { compressedFile ->
-                // Menetapkan URI dari file yang telah dikurangi ukurannya ke ImageView
                 val compressedUri = Uri.fromFile(compressedFile)
                 imageUri = compressedUri
                 binding.cvImagePreview.setImageURI(compressedUri)
