@@ -87,6 +87,21 @@ class SaveFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (arguments != null) {
+            id = arguments?.getString("SCANNED_DATA", "ID").toString()
+            Log.d("CEK FIRST CHAR OF ID SAVE1", id)
+
+            if (id.isNotEmpty()) {
+                Log.d("CEK FIRST CHAR OF ID SAVE2", "${id.first()}")
+                if (id.first() == '1') {
+                    showDasField()
+                }
+            } else {
+                Log.d("CEK FIRST CHAR OF ID SAVE3", "ID is empty.")
+            }
+
+        }
+
         spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
         // Pemetaan jenis dengan ID dan nama
         val jenisMap = spinnerItemJenis.map {
@@ -253,6 +268,17 @@ class SaveFragment : Fragment() {
                 showToast("Harap isi semua data")
             }
         }
+    }
+
+    private fun showDasField() {
+        binding.tvPetak.visibility = View.VISIBLE
+        binding.spinPetak.visibility = View.VISIBLE
+        binding.tvSkDas.visibility = View.VISIBLE
+        binding.spinSkDas.visibility = View.VISIBLE
+        binding.tvSkKk.visibility = View.VISIBLE
+        binding.spinSkKk.visibility = View.VISIBLE
+        binding.tvStatusAreaTanam.visibility = View.VISIBLE
+        binding.spinStatusAreaTanam.visibility = View.VISIBLE
     }
 
     @SuppressLint("QueryPermissionsNeeded")

@@ -14,6 +14,7 @@ import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.os.Build
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -177,6 +178,8 @@ class CameraFragment : Fragment() {
     private fun handleScanResult(contents: String) {
         resultId = contents
         showToast("QR Code: $contents")
+        Log.d("CEK FIRST CHAR OF ID1", "QR Code: $contents")
+        Log.d("CEK FIRST CHAR OF ID2", "${contents.first()}")
         val bundle = Bundle().apply {
             putString("SCANNED_DATA", contents)
             putAll(_locationBundle)

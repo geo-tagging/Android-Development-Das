@@ -258,13 +258,35 @@
             </Spinner>
 
             <TextView
+                android:id="@+id/tv_petak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_petak"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_kegiatan"></TextView>
+
+            <Spinner
+                android:id="@+id/spin_petak"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_petak"></Spinner>
+
+            <TextView
                 android:id="@+id/tv_sk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:text="@string/form_sk"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_kegiatan">
+                app:layout_constraintTop_toBottomOf="@id/spin_petak">
             </TextView>
 
             <Spinner
@@ -280,13 +302,57 @@
             </Spinner>
 
             <TextView
+                android:id="@+id/tv_sk_das"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_das_sk"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_sk"></TextView>
+
+            <Spinner
+                android:id="@+id/spin_sk_das"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_sk_das"></Spinner>
+
+            <TextView
+                android:id="@+id/tv_sk_kk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_das_sk_kk"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_sk_das"></TextView>
+
+            <Spinner
+                android:id="@+id/spin_sk_kk"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_sk_kk"></Spinner>
+
+            <TextView
                 android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:text="@string/form_status"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_sk">
+                app:layout_constraintTop_toBottomOf="@id/spin_sk_kk">
             </TextView>
 
             <Spinner
@@ -302,13 +368,35 @@
             </Spinner>
 
             <TextView
+                android:id="@+id/tv_status_area_tanam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_status_area_tanam"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_status"></TextView>
+
+            <Spinner
+                android:id="@+id/spin_status_area_tanam"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_status_area_tanam"></Spinner>
+
+            <TextView
                 android:id="@+id/tv_tinggi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:text="@string/form_tinggi"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_status">
+                app:layout_constraintTop_toBottomOf="@id/spin_status_area_tanam">
             </TextView>
 
             <EditText

@@ -212,6 +212,6 @@
     <string name="pilih_lokasi">Pilih lokasi</string>
     <string name="form_petak">Petak</string>
     <string name="form_das_sk_kk">SK Kawasan Kerja</string>
-    <string name="form_das_sk">SK</string>
+    <string name="form_das_sk">SK DAS</string>
     <string name="form_status_area_tanam">Status Area Tanam</string>
 </resources>
