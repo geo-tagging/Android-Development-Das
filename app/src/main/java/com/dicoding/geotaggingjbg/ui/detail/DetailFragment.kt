@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -30,7 +30,6 @@ import com.dicoding.geotaggingjbg.BuildConfig
 import com.dicoding.geotaggingjbg.R
 import com.dicoding.geotaggingjbg.data.database.Entity
 import com.dicoding.geotaggingjbg.databinding.FragmentDetailBinding
-import com.dicoding.geotaggingjbg.ui.home.HomeFragment
 import com.dicoding.geotaggingjbg.ui.utils.createCustomTempFile
 import com.dicoding.geotaggingjbg.ui.utils.reduceFileImage
 import com.dicoding.geotaggingjbg.ui.utils.uriToFile
@@ -69,19 +68,32 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments?.getString("SCANNED_DATA").toString().toInt()
+        val idStr = arguments?.getString("SCANNED_DATA").toString()
         val factory = DetailViewModelFactory.createFactory(requireActivity(), id)
 
+        Log.d("CEK FIRST CHAR OF ID DETAIL1", idStr)
+
+        if (idStr.isNotEmpty()) {
+            Log.d("CEK FIRST CHAR OF ID DETAIL2", "${idStr.first()}")
+            if (idStr.first() == '1') {
+                showDasField()
+            }
+        } else {
+            Log.d("CEK FIRST CHAR OF ID DETAIL3", "ID is empty.")
+        }
+
         viewModel = ViewModelProvider(this, factory)[DetailViewModel::class.java]
-        viewModel.getData.observe(viewLifecycleOwner){entity ->
+        viewModel.getData.observe(viewLifecycleOwner) { entity ->
             showDetail(entity)
         }
-        binding.btHapus.setOnClickListener{
+        binding.btHapus.setOnClickListener {
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
             alertDialogBuilder.setTitle("Konfirmasi Hapus Data")
             alertDialogBuilder.setMessage("Apakah anda yakin ingin menghapus data?")
             alertDialogBuilder.setPositiveButton("Ya") { _, _ ->
                 viewModel.deleteData()
-                requireView().findNavController().navigate(R.id.action_navigation_detail_to_navigation_home)
+                requireView().findNavController()
+                    .navigate(R.id.action_navigation_detail_to_navigation_home)
             }
             alertDialogBuilder.setNegativeButton("Tidak") { dialog, _ ->
                 dialog.dismiss()
@@ -89,10 +101,10 @@ class DetailFragment : Fragment() {
             alertDialogBuilder.show()
         }
         binding.btSimpan.setOnClickListener {
-            if(imageUri != null){
+            if (imageUri != null) {
                 viewModel.getData.value?.let { entity ->
                     binding.apply {
-                        if (imageUri != null){
+                        if (imageUri != null) {
                             entity.image = imageUri.toString()
                         }
                         entity.tanggal = tvTanggalisi.text.toString()
@@ -113,8 +125,8 @@ class DetailFragment : Fragment() {
                 }
                 showToast("Update data berhasil")
                 it.findNavController().navigate(R.id.action_navigation_detail_to_navigation_home)
-            } else{
-            showToast("Harap ambil gambar terlebih dahulu!")
+            } else {
+                showToast("Harap ambil gambar terlebih dahulu!")
             }
         }
 
@@ -122,11 +134,11 @@ class DetailFragment : Fragment() {
             dispatchTakePictureIntent()
         }
 
-        binding.ivClose.setOnClickListener{
+        binding.ivClose.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        binding.iconDate.setOnClickListener{
+        binding.iconDate.setOnClickListener {
             showDatePickerDialog()
         }
     }
@@ -147,32 +159,36 @@ class DetailFragment : Fragment() {
 
                 //TODO: Combine spinner with AutoCompleteTextView
                 spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
-                val spinnerIdJenis = spinnerItemJenis.map{ it.split(",")[1]}.drop(1)
-                val adapterJenis = ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdJenis)
+                val spinnerIdJenis = spinnerItemJenis.map { it.split(",")[1] }.drop(1)
+                val adapterJenis =
+                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdJenis)
                 adapterJenis.setDropDownViewResource(R.layout.row_spinners_dropdown)
                 binding.spinJentan.adapter = adapterJenis
 
                 spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
-                val spinnerIdLokasi = spinnerItemLokasi.map{ it.split(",")[1]}.drop(1)
-                val adapterLokasi = ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdLokasi)
+                val spinnerIdLokasi = spinnerItemLokasi.map { it.split(",")[1] }.drop(1)
+                val adapterLokasi =
+                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdLokasi)
                 adapterLokasi.setDropDownViewResource(R.layout.row_spinners_dropdown)
                 binding.spinLokasi.adapter = adapterLokasi
 
                 spinnerItemKegiatan = resources.getStringArray(R.array.array_kegiatan)
-                val spinnerIdKegiatan = spinnerItemKegiatan.map{ it.split(",")[1]}.drop(1)
-                val adapterKegiatan = ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdKegiatan)
+                val spinnerIdKegiatan = spinnerItemKegiatan.map { it.split(",")[1] }.drop(1)
+                val adapterKegiatan =
+                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdKegiatan)
                 adapterKegiatan.setDropDownViewResource(R.layout.row_spinners_dropdown)
                 binding.spinKegiatan.adapter = adapterKegiatan
 
                 spinnerItemSk = resources.getStringArray(R.array.array_sk)
-                val spinnerIdSk = spinnerItemSk.map{ it.split(",")[1]}.drop(1)
+                val spinnerIdSk = spinnerItemSk.map { it.split(",")[1] }.drop(1)
                 val adapterSk = ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdSk)
                 adapterSk.setDropDownViewResource(R.layout.row_spinners_dropdown)
                 binding.spinSk.adapter = adapterSk
 
                 spinnerItemStatus = resources.getStringArray(R.array.array_status)
-                val spinnerIdStatus = spinnerItemStatus.map{ it.split(",")[1]}.drop(1)
-                val adapterStatus = ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdStatus)
+                val spinnerIdStatus = spinnerItemStatus.map { it.split(",")[1] }.drop(1)
+                val adapterStatus =
+                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdStatus)
                 adapterStatus.setDropDownViewResource(R.layout.row_spinners_dropdown)
                 binding.spinStatus.adapter = adapterStatus
 
@@ -225,6 +241,17 @@ class DetailFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showDasField() {
+        binding.tvPetak.visibility = View.VISIBLE
+        binding.spinPetak.visibility = View.VISIBLE
+        binding.tvSkDas.visibility = View.VISIBLE
+        binding.spinSkDas.visibility = View.VISIBLE
+        binding.tvSkKk.visibility = View.VISIBLE
+        binding.spinSkKk.visibility = View.VISIBLE
+        binding.tvStatusAreaTanam.visibility = View.VISIBLE
+        binding.spinStatusAreaTanam.visibility = View.VISIBLE
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -344,7 +371,8 @@ class DetailFragment : Fragment() {
                 val selectedDate = Calendar.getInstance().apply {
                     set(year, month, dayOfMonth)
                 }
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                val dateFormat =
+                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val formattedDate = dateFormat.format(selectedDate.time)
                 binding.tvTanggalisi.text = formattedDate

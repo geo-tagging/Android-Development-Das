@@ -10,7 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -67,19 +68,31 @@ class DetailRemoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments?.getString("SCANNED_DATA").toString().toInt()
+        val idStr = arguments?.getString("SCANNED_DATA").toString()
         val factory = DetailRemoteViewModelFactory.createFactory(requireActivity(), id)
+
+        Log.d("CEK FIRST CHAR OF ID DETAILREMOTE1", idStr)
+
+        if (idStr.isNotEmpty()) {
+            Log.d("CEK FIRST CHAR OF ID DETAILREMOTE2", "${idStr.first()}")
+            if (idStr.first() == '1') {
+                showDasField()
+            }
+        } else {
+            Log.d("CEK FIRST CHAR OF ID DETAILREMOTE3", "ID is empty.")
+        }
 
         viewModel = ViewModelProvider(this, factory)[DetailRemoteViewModel::class.java]
         viewModel.getRemoteData.observe(viewLifecycleOwner) { remoteEntity ->
             showDetail(remoteEntity)
         }
 
-        binding.ivClose.setOnClickListener{
+        binding.ivClose.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
         binding.btSimpan.setOnClickListener {
-            if(imageUri != null){
+            if (imageUri != null) {
                 binding.apply {
                     val data = Entity(
                         id = id,
@@ -100,9 +113,10 @@ class DetailRemoteFragment : Fragment() {
                     viewModel.saveLocal(data)
                     showToast("Data telah berhasil disimpan!")
                 }
-                it.findNavController().navigate(R.id.action_navigation_detail_remote_to_navigation_home)
-            } else{
-            showToast("Harap ambil gambar terlebih dahulu!")
+                it.findNavController()
+                    .navigate(R.id.action_navigation_detail_remote_to_navigation_home)
+            } else {
+                showToast("Harap ambil gambar terlebih dahulu!")
             }
         }
 
@@ -120,118 +134,129 @@ class DetailRemoteFragment : Fragment() {
     }
 
     private fun showDetail(entity: RemoteEntity) {
-            entity.apply {
-                binding.apply {
-                    imageUri = entity.images?.toUri()
-                    val id = entity.id_tanaman
-                    val date = entity.tanggal_tanam
-                    val jenTanId = entity.id_jenis - 1
-                    val lokasiId = entity.id_lokasi - 1
-                    val kegiatanId = entity.id_kegiatan - 1
-                    val skId = entity.id_sk - 1
-                    val statusId = entity.id_status - 1
-                    val tinggi = entity.tinggi
-                    val diameter = entity.diameter
+        entity.apply {
+            binding.apply {
+                imageUri = entity.images?.toUri()
+                val id = entity.id_tanaman
+                val date = entity.tanggal_tanam
+                val jenTanId = entity.id_jenis - 1
+                val lokasiId = entity.id_lokasi - 1
+                val kegiatanId = entity.id_kegiatan - 1
+                val skId = entity.id_sk - 1
+                val statusId = entity.id_status - 1
+                val tinggi = entity.tinggi
+                val diameter = entity.diameter
 
-                    spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
-                    val spinnerIdJenis = spinnerItemJenis.map { it.split(",")[1] }.drop(1)
-                    val adapterJenis = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdJenis
-                    )
-                    adapterJenis.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinJentan.adapter = adapterJenis
+                spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
+                val spinnerIdJenis = spinnerItemJenis.map { it.split(",")[1] }.drop(1)
+                val adapterJenis = ArrayAdapter(
+                    requireContext(),
+                    R.layout.row_spinner,
+                    spinnerIdJenis
+                )
+                adapterJenis.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                binding.spinJentan.adapter = adapterJenis
 
-                    spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
-                    val spinnerIdLokasi = spinnerItemLokasi.map { it.split(",")[1] }.drop(1)
-                    val adapterLokasi = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdLokasi
-                    )
-                    adapterLokasi.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinLokasi.adapter = adapterLokasi
+                spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
+                val spinnerIdLokasi = spinnerItemLokasi.map { it.split(",")[1] }.drop(1)
+                val adapterLokasi = ArrayAdapter(
+                    requireContext(),
+                    R.layout.row_spinner,
+                    spinnerIdLokasi
+                )
+                adapterLokasi.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                binding.spinLokasi.adapter = adapterLokasi
 
-                    spinnerItemKegiatan = resources.getStringArray(R.array.array_kegiatan)
-                    val spinnerIdKegiatan = spinnerItemKegiatan.map { it.split(",")[1] }.drop(1)
-                    val adapterKegiatan = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdKegiatan
-                    )
-                    adapterKegiatan.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinKegiatan.adapter = adapterKegiatan
+                spinnerItemKegiatan = resources.getStringArray(R.array.array_kegiatan)
+                val spinnerIdKegiatan = spinnerItemKegiatan.map { it.split(",")[1] }.drop(1)
+                val adapterKegiatan = ArrayAdapter(
+                    requireContext(),
+                    R.layout.row_spinner,
+                    spinnerIdKegiatan
+                )
+                adapterKegiatan.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                binding.spinKegiatan.adapter = adapterKegiatan
 
-                    spinnerItemSk = resources.getStringArray(R.array.array_sk)
-                    val spinnerIdSk = spinnerItemSk.map { it.split(",")[1] }.drop(1)
-                    val adapterSk = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdSk
-                    )
-                    adapterSk.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinSk.adapter = adapterSk
+                spinnerItemSk = resources.getStringArray(R.array.array_sk)
+                val spinnerIdSk = spinnerItemSk.map { it.split(",")[1] }.drop(1)
+                val adapterSk = ArrayAdapter(
+                    requireContext(),
+                    R.layout.row_spinner,
+                    spinnerIdSk
+                )
+                adapterSk.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                binding.spinSk.adapter = adapterSk
 
-                    spinnerItemStatus = resources.getStringArray(R.array.array_status)
-                    val spinnerIdStatus = spinnerItemStatus.map { it.split(",")[1] }.drop(1)
-                    val adapterStatus = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdStatus
-                    )
-                    adapterStatus.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinStatus.adapter = adapterStatus
+                spinnerItemStatus = resources.getStringArray(R.array.array_status)
+                val spinnerIdStatus = spinnerItemStatus.map { it.split(",")[1] }.drop(1)
+                val adapterStatus = ArrayAdapter(
+                    requireContext(),
+                    R.layout.row_spinner,
+                    spinnerIdStatus
+                )
+                adapterStatus.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                binding.spinStatus.adapter = adapterStatus
 
-                    cvImagePreview.setImageURI(imageUri)
-                    tvIdisi.text = id.toString()
-                    tvTanggalisi.text = date
-                    etTinggi.setText(tinggi.toString())
-                    etDia.setText(diameter.toString())
+                cvImagePreview.setImageURI(imageUri)
+                tvIdisi.text = id.toString()
+                tvTanggalisi.text = date
+                etTinggi.setText(tinggi.toString())
+                etDia.setText(diameter.toString())
 
-                    val latEdit = entity.easting
-                    etLat.setText(latEdit.toString())
-                    val longEdit = entity.northing
-                    etLong.setText(longEdit.toString())
-                    val elevEdit = entity.elevasi
-                    etElev.setText(elevEdit.toString())
+                val latEdit = entity.easting
+                etLat.setText(latEdit.toString())
+                val longEdit = entity.northing
+                etLong.setText(longEdit.toString())
+                val elevEdit = entity.elevasi
+                etElev.setText(elevEdit.toString())
 
-                    for ((index, item) in spinnerItemJenis.withIndex()) {
-                        if (item.split(",")[0].toInt() == jenTanId) {
-                            spinJentan.setSelection(index)
-                            break
-                        }
+                for ((index, item) in spinnerItemJenis.withIndex()) {
+                    if (item.split(",")[0].toInt() == jenTanId) {
+                        spinJentan.setSelection(index)
+                        break
                     }
+                }
 
-                    for ((index, item) in spinnerItemLokasi.withIndex()) {
-                        if (item.split(",")[0].toInt() == lokasiId) {
-                            spinLokasi.setSelection(index)
-                            break
-                        }
+                for ((index, item) in spinnerItemLokasi.withIndex()) {
+                    if (item.split(",")[0].toInt() == lokasiId) {
+                        spinLokasi.setSelection(index)
+                        break
                     }
+                }
 
-                    for ((index, item) in spinnerItemKegiatan.withIndex()) {
-                        if (item.split(",")[0].toInt() == kegiatanId) {
-                            spinKegiatan.setSelection(index)
-                            break
-                        }
+                for ((index, item) in spinnerItemKegiatan.withIndex()) {
+                    if (item.split(",")[0].toInt() == kegiatanId) {
+                        spinKegiatan.setSelection(index)
+                        break
                     }
+                }
 
-                    for ((index, item) in spinnerItemSk.withIndex()) {
-                        if (item.split(",")[0].toInt() == skId) {
-                            spinSk.setSelection(index)
-                            break
-                        }
+                for ((index, item) in spinnerItemSk.withIndex()) {
+                    if (item.split(",")[0].toInt() == skId) {
+                        spinSk.setSelection(index)
+                        break
                     }
+                }
 
-                    for ((index, item) in spinnerItemStatus.withIndex()) {
-                        if (item.split(",")[0].toInt() == statusId) {
-                            spinStatus.setSelection(index)
-                            break
-                        }
+                for ((index, item) in spinnerItemStatus.withIndex()) {
+                    if (item.split(",")[0].toInt() == statusId) {
+                        spinStatus.setSelection(index)
+                        break
                     }
                 }
             }
+        }
+    }
+
+    private fun showDasField() {
+        binding.tvPetak.visibility = View.VISIBLE
+        binding.spinPetak.visibility = View.VISIBLE
+        binding.tvSkDas.visibility = View.VISIBLE
+        binding.spinSkDas.visibility = View.VISIBLE
+        binding.tvSkKk.visibility = View.VISIBLE
+        binding.spinSkKk.visibility = View.VISIBLE
+        binding.tvStatusAreaTanam.visibility = View.VISIBLE
+        binding.spinStatusAreaTanam.visibility = View.VISIBLE
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -351,7 +376,8 @@ class DetailRemoteFragment : Fragment() {
                 val selectedDate = Calendar.getInstance().apply {
                     set(year, month, dayOfMonth)
                 }
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                val dateFormat =
+                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val formattedDate = dateFormat.format(selectedDate.time)
                 binding.tvTanggalisi.text = formattedDate

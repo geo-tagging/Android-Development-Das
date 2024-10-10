@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.DatePicker
@@ -30,8 +29,6 @@ import com.dicoding.geotaggingjbg.BuildConfig
 import com.dicoding.geotaggingjbg.R
 import com.dicoding.geotaggingjbg.data.database.Entity
 import com.dicoding.geotaggingjbg.databinding.FragmentSaveBinding
-import com.dicoding.geotaggingjbg.ui.home.HomeViewModel
-import com.dicoding.geotaggingjbg.ui.home.HomeViewModelFactory
 import com.dicoding.geotaggingjbg.ui.utils.createCustomTempFile
 import com.dicoding.geotaggingjbg.ui.utils.reduceFileImage
 import com.dicoding.geotaggingjbg.ui.utils.uriToFile
@@ -99,7 +96,6 @@ class SaveFragment : Fragment() {
             } else {
                 Log.d("CEK FIRST CHAR OF ID SAVE3", "ID is empty.")
             }
-
         }
 
         spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
@@ -143,7 +139,8 @@ class SaveFragment : Fragment() {
             setOnItemClickListener { _, _, position, _ ->
 //                selectedLokasiId = spinnerItemLokasi[position].split(",")[0].toInt()
                 val selectedName = adapterLokasi.getItem(position) ?: ""
-                selectedLokasiId = lokasiMap.filterValues { it == selectedName }.keys.first().toInt()
+                selectedLokasiId =
+                    lokasiMap.filterValues { it == selectedName }.keys.first().toInt()
                 Log.d("CEKLIST", "Selected lokasi: $selectedName, ID: $selectedLokasiId")
             }
         }
