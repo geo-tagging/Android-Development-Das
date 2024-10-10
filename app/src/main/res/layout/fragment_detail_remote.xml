@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,9 +24,9 @@
                 android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_close_black"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cv_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
 
             <androidx.cardview.widget.CardView
@@ -43,8 +42,7 @@
                     android:id="@+id/cv_image_preview"
                     android:layout_width="210dp"
                     android:layout_height="280dp"
-                    android:contentDescription="@string/desc_iv">
-                </ImageView>
+                    android:contentDescription="@string/desc_iv" />
             </androidx.cardview.widget.CardView>
 
             <Button
@@ -56,8 +54,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cv_image">
-            </Button>
+                app:layout_constraintTop_toBottomOf="@+id/cv_image" />
 
             <TextView
                 android:id="@+id/tv_judul"
@@ -66,8 +63,7 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bt_pilih">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/bt_pilih" />
 
             <TextView
                 android:id="@+id/tv_id"
@@ -76,20 +72,18 @@
                 android:layout_margin="12dp"
                 android:text="@string/id_tanaman"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_judul">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@+id/tv_judul" />
 
             <TextView
                 android:id="@+id/tv_idisi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:textStyle="bold"
-                android:textSize="16sp"
                 android:text="@string/id_tanaman"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_id">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@+id/tv_id" />
 
             <TextView
                 android:id="@+id/tv_tanggal"
@@ -98,33 +92,31 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_tanggal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_idisi">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@+id/tv_idisi" />
 
             <TextView
                 android:id="@+id/tv_tanggalisi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:textStyle="bold"
-                android:textSize="16sp"
                 android:text="@string/form_tanggal"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/icon_date"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_tanggal">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@+id/tv_tanggal" />
 
             <ImageView
                 android:id="@+id/icon_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_date_24"
+                android:contentDescription="@string/select_date"
                 android:padding="16dp"
+                android:src="@drawable/ic_date_24"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_tanggalisi"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_tanggalisi"
-                app:layout_constraintTop_toTopOf="@+id/tv_tanggalisi"
-                app:layout_constraintEnd_toEndOf="parent">
-            </ImageView>
+                app:layout_constraintTop_toTopOf="@+id/tv_tanggalisi" />
 
             <TextView
                 android:id="@+id/tv_lat"
@@ -133,18 +125,19 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_lat"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/icon_date">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/icon_date" />
 
             <EditText
                 android:id="@+id/et_lat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
+                android:importantForAccessibility="no"
                 android:inputType="numberDecimal|numberSigned"
+                android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_lat">
-            </EditText>
+                app:layout_constraintTop_toBottomOf="@id/tv_lat"
+                tools:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/tv_long"
@@ -153,18 +146,19 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_long"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_lat">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/et_lat" />
 
             <EditText
                 android:id="@+id/et_long"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
+                android:importantForAccessibility="no"
                 android:inputType="numberDecimal|numberSigned"
+                android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_long">
-            </EditText>
+                app:layout_constraintTop_toBottomOf="@id/tv_long"
+                tools:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/tv_elev"
@@ -173,18 +167,19 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_elev"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_long">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/et_long" />
 
             <EditText
                 android:id="@+id/et_elev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
+                android:importantForAccessibility="no"
                 android:inputType="numberDecimal|numberSigned"
+                android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_elev">
-            </EditText>
+                app:layout_constraintTop_toBottomOf="@id/tv_elev"
+                tools:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/tv_jentan"
@@ -193,20 +188,18 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_jentan"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_elev">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/et_elev" />
 
             <Spinner
                 android:id="@+id/spin_jentan"
+                style="@style/style_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:minHeight="48dp"
                 android:padding="10dp"
-                android:layout_margin="12dp"
-                style="@style/style_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_jentan">
-            </Spinner>
+                app:layout_constraintTop_toBottomOf="@id/tv_jentan" />
 
             <TextView
                 android:id="@+id/tv_lokasi"
@@ -215,20 +208,18 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_lokasi"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_jentan">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/spin_jentan" />
 
             <Spinner
                 android:id="@+id/spin_lokasi"
+                style="@style/style_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:minHeight="48dp"
                 android:padding="10dp"
-                android:layout_margin="12dp"
-                style="@style/style_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_lokasi">
-            </Spinner>
+                app:layout_constraintTop_toBottomOf="@id/tv_lokasi" />
 
             <TextView
                 android:id="@+id/tv_kegiatan"
@@ -237,20 +228,40 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_kegiatan"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_lokasi">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/spin_lokasi" />
 
             <Spinner
                 android:id="@+id/spin_kegiatan"
+                style="@style/style_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:minHeight="48dp"
                 android:padding="10dp"
-                android:layout_margin="12dp"
-                style="@style/style_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_kegiatan">
-            </Spinner>
+                app:layout_constraintTop_toBottomOf="@id/tv_kegiatan" />
+
+            <TextView
+                android:id="@+id/tv_petak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_petak"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_kegiatan" />
+
+            <Spinner
+                android:id="@+id/spin_petak"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_petak" />
 
             <TextView
                 android:id="@+id/tv_sk"
@@ -259,20 +270,62 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_sk"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_kegiatan">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/spin_petak" />
 
             <Spinner
                 android:id="@+id/spin_sk"
+                style="@style/style_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:minHeight="48dp"
                 android:padding="10dp"
-                android:layout_margin="12dp"
-                style="@style/style_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_sk">
-            </Spinner>
+                app:layout_constraintTop_toBottomOf="@id/tv_sk" />
+
+            <TextView
+                android:id="@+id/tv_sk_das"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_das_sk"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_sk" />
+
+            <Spinner
+                android:id="@+id/spin_sk_das"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_sk_das" />
+
+            <TextView
+                android:id="@+id/tv_sk_kk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_das_sk_kk"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_sk_das" />
+
+            <Spinner
+                android:id="@+id/spin_sk_kk"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_sk_kk" />
 
             <TextView
                 android:id="@+id/tv_status"
@@ -281,20 +334,40 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_status"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_sk">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/spin_sk_kk" />
 
             <Spinner
                 android:id="@+id/spin_status"
+                style="@style/style_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:minHeight="48dp"
                 android:padding="10dp"
-                android:layout_margin="12dp"
-                style="@style/style_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_status">
-            </Spinner>
+                app:layout_constraintTop_toBottomOf="@id/tv_status" />
+
+            <TextView
+                android:id="@+id/tv_status_area_tanam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/form_status_area_tanam"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spin_status" />
+
+            <Spinner
+                android:id="@+id/spin_status_area_tanam"
+                style="@style/style_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_status_area_tanam" />
 
             <TextView
                 android:id="@+id/tv_tinggi"
@@ -303,18 +376,19 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_tinggi"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_status">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/spin_status_area_tanam" />
 
             <EditText
                 android:id="@+id/et_tinggi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
+                android:importantForAccessibility="no"
                 android:inputType="numberDecimal|numberSigned"
+                android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="@id/tv_tinggi"
-                app:layout_constraintTop_toBottomOf="@id/tv_tinggi">
-            </EditText>
+                app:layout_constraintTop_toBottomOf="@id/tv_tinggi"
+                tools:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/tv_tinggi_unit"
@@ -323,8 +397,7 @@
                 android:layout_marginEnd="12dp"
                 android:text="@string/sat_tinggi"
                 app:layout_constraintBaseline_toBaselineOf="@id/et_tinggi"
-                app:layout_constraintEnd_toEndOf="parent">
-            </TextView>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/tv_dia"
@@ -333,18 +406,19 @@
                 android:layout_margin="12dp"
                 android:text="@string/form_dia"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_tinggi">
-            </TextView>
+                app:layout_constraintTop_toBottomOf="@id/et_tinggi" />
 
             <EditText
                 android:id="@+id/et_dia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
+                android:importantForAccessibility="no"
                 android:inputType="numberDecimal|numberSigned"
+                android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="@id/tv_dia"
-                app:layout_constraintTop_toBottomOf="@id/tv_dia">
-            </EditText>
+                app:layout_constraintTop_toBottomOf="@id/tv_dia"
+                tools:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/tv_dia_unit"
@@ -353,8 +427,7 @@
                 android:layout_marginEnd="12dp"
                 android:text="@string/sat_dia"
                 app:layout_constraintBaseline_toBaselineOf="@id/et_dia"
-                app:layout_constraintEnd_toEndOf="parent">
-            </TextView>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <Button
                 android:id="@+id/bt_batal"
@@ -362,11 +435,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:text="@string/bt_batal"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_dia"
-                app:layout_constraintEnd_toStartOf="@+id/bt_simpan">
-            </Button>
+                app:layout_constraintEnd_toStartOf="@+id/bt_simpan"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_dia" />
 
             <Button
                 android:id="@+id/bt_simpan"
@@ -374,11 +446,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:text="@string/bt_simpan"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/bt_batal"
-                app:layout_constraintTop_toBottomOf="@id/et_dia">
-            </Button>
+                app:layout_constraintTop_toBottomOf="@id/et_dia" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </FrameLayout>

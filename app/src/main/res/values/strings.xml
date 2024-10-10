@@ -214,4 +214,5 @@
     <string name="form_das_sk_kk">SK Kawasan Kerja</string>
     <string name="form_das_sk">SK DAS</string>
     <string name="form_status_area_tanam">Status Area Tanam</string>
+    <string name="select_date">Pilih Tanggal</string>
 </resources>
