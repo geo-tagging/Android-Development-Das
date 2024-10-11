@@ -66,21 +66,18 @@ class LandingViewModel(
     fun loadLokasiFromDatabase() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val lokasiList = optionRepository.getLokasi()  // Dipanggil dari background thread
+                val lokasiList = optionRepository.getLokasi()
                 withContext(Dispatchers.Main) {
-                    _lokasiList.value = lokasiList  // Update ke UI harus di main thread
+                    if (lokasiList.isEmpty()) {
+                        // Jika database kosong, ambil data dari strings.xml
+                        _lokasiList.value = emptyList()  // Pastikan LiveData tetap diperbarui sebagai list kosong
+                    } else {
+                        _lokasiList.value = lokasiList  // Jika ada data, ambil dari database
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("LandingViewModel", "Error loading lokasi from database", e)
             }
         }
     }
-
-//    fun allLokasi(){
-//        viewModelScope.launch {
-//            val lokasi = optionRepository.getLokasi()
-//            _lokasiList.value = lokasi
-//        }
-//    }
-
 }
