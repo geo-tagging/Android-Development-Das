@@ -296,28 +296,6 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_sk" />
 
             <TextView
-                android:id="@+id/tv_sk_das"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:text="@string/form_das_sk"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_sk" />
-
-            <Spinner
-                android:id="@+id/spin_sk_das"
-                style="@style/style_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_sk_das" />
-
-            <TextView
                 android:id="@+id/tv_sk_kk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -325,7 +303,7 @@
                 android:text="@string/form_das_sk_kk"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_sk_das" />
+                app:layout_constraintTop_toBottomOf="@id/spin_sk" />
 
             <Spinner
                 android:id="@+id/spin_sk_kk"

@@ -251,8 +251,6 @@ class DetailRemoteFragment : Fragment() {
     private fun showDasField() {
         binding.tvPetak.visibility = View.VISIBLE
         binding.spinPetak.visibility = View.VISIBLE
-        binding.tvSkDas.visibility = View.VISIBLE
-        binding.spinSkDas.visibility = View.VISIBLE
         binding.tvSkKk.visibility = View.VISIBLE
         binding.spinSkKk.visibility = View.VISIBLE
         binding.tvStatusAreaTanam.visibility = View.VISIBLE

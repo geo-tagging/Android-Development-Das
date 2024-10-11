@@ -69,6 +69,9 @@ class SaveFragment : Fragment() {
     private lateinit var spinnerItemKegiatan: Array<String>
     private lateinit var spinnerItemSk: Array<String>
     private lateinit var spinnerItemStatus: Array<String>
+    private lateinit var spinnerItemPetak: Array<String>
+    private lateinit var spinnerItemSkKawasanKerja: Array<String>
+    private lateinit var spinnerItemStatusAreaTanam: Array<String>
 
     private var selectedJenisId: Int = -1
     private var selectedLokasiId: Int = -1
@@ -92,6 +95,7 @@ class SaveFragment : Fragment() {
                 Log.d("CEK FIRST CHAR OF ID SAVE2", "${id.first()}")
                 if (id.first() == '1') {
                     showDasField()
+
                 }
             } else {
                 Log.d("CEK FIRST CHAR OF ID SAVE3", "ID is empty.")
@@ -270,8 +274,6 @@ class SaveFragment : Fragment() {
     private fun showDasField() {
         binding.tvPetak.visibility = View.VISIBLE
         binding.spinPetak.visibility = View.VISIBLE
-        binding.tvSkDas.visibility = View.VISIBLE
-        binding.spinSkDas.visibility = View.VISIBLE
         binding.tvSkKk.visibility = View.VISIBLE
         binding.spinSkKk.visibility = View.VISIBLE
         binding.tvStatusAreaTanam.visibility = View.VISIBLE
