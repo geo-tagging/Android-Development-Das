@@ -193,6 +193,7 @@
         <item>1,671</item>
         <item>2,1080</item>
         <item>3,APL</item>
+        <item>4,130</item>
     </string-array>
 
     <string-array name="array_status">
@@ -200,6 +201,45 @@
         <item>1,Hidup</item>
         <item>2,Mati</item>
         <item>3,Merana/Kritis</item>
+    </string-array>
+
+    <string-array name="array_petak">
+        <item>0,Pilih petak</item>
+        <item>1,Petak 1</item>
+        <item>2,Petak 2</item>
+        <item>3,Petak 3</item>
+        <item>4,Petak 4</item>
+        <item>5,Petak 5</item>
+        <item>6,Petak 6</item>
+        <item>7,Petak 7</item>
+        <item>8,Petak 8</item>
+        <item>9,Petak 9</item>
+        <item>10,Petak 10</item>
+        <item>11,Petak 11</item>
+        <item>12,Petak 12</item>
+        <item>13,Petak 13</item>
+        <item>14,Petak 14</item>
+        <item>15,Petak 15</item>
+        <item>16,Petak 16</item>
+        <item>17,Petak 17</item>
+        <item>18,Petak 18</item>
+        <item>19,Petak 19</item>
+        <item>20,Petak 20</item>
+    </string-array>
+
+    <string-array name="array_sk_kk">
+        <item>0,Pilih sk kawasan kerja</item>
+        <item>1,Tahura Sultan Adam</item>
+        <item>2,Hutan Lindung</item>
+        <item>3,Mandiangin</item>
+    </string-array>
+
+    <string-array name="array_status_area_tanam">
+        <item>0,Pilih status area tanam</item>
+        <item>1,P0</item>
+        <item>2,P1</item>
+        <item>3,P2</item>
+        <item>4,P3</item>
     </string-array>
 
     <string name="bt_upload">Upload</string>
@@ -212,7 +252,6 @@
     <string name="pilih_lokasi">Pilih lokasi</string>
     <string name="form_petak">Petak</string>
     <string name="form_das_sk_kk">SK Kawasan Kerja</string>
-    <string name="form_das_sk">SK DAS</string>
     <string name="form_status_area_tanam">Status Area Tanam</string>
     <string name="select_date">Pilih Tanggal</string>
 </resources>
