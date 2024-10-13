@@ -29,9 +29,11 @@ class LandingActivity : AppCompatActivity() {
     }
     private lateinit var binding: ActivityLandingBinding
     private lateinit var spinnerItemLokasi: Array<String>
+    private lateinit var lokasiNames: Array<String>
     private lateinit var stringLokasi: String
     private var selectedValue: String? = null
     private var dialogShown = false
+    private var lokasiMap = mutableMapOf<Int, String>()
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -78,91 +80,79 @@ class LandingActivity : AppCompatActivity() {
             }
         }
 
-        // Mengambil item lokasi dari string-array
-        spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
-//        val lokasiNames = spinnerItemLokasi.map { it.split(",")[1] }
-        //KODE BARU
-        // Pemetaan lokasi dengan ID dan nama
-        val lokasiMap = spinnerItemLokasi.map {
-            val parts = it.split(",")
-            parts[0] to parts[1]  // (ID, Nama)
-        }.toMap()
-        // Ambil hanya nama lokasi untuk ditampilkan di AutoCompleteTextView
-        val lokasiNames = lokasiMap.values.toList()
-        //SAMPE SINI
-
-        // Adapter untuk AutoCompleteTextView
-        val adapterLokasi = ArrayAdapter(this, R.layout.row_spinner, lokasiNames)
-        binding.autocompleteLokasi.setAdapter(adapterLokasi)
-
-        // Listener untuk item AutoCompleteTextView
-        binding.autocompleteLokasi.setOnItemClickListener { parent, _, position, _ ->
-//            selectedValue = spinnerItemLokasi[position]
-//            Log.d("CEKLIST", "Selected lokasi: $selectedValue")
+        // Observe lokasiList dari ViewModel
+        viewModel.lokasiList.observe(this) { lokasiList ->
             //KODE BARU
-            selectedValue = parent.getItemAtPosition(position) as String
-            // Cari ID berdasarkan nama yang dipilih
-            val selectedId = lokasiMap.filterValues { it == selectedValue }.keys.first()
-            //SAMPE SINI
+            if (lokasiList.isNullOrEmpty()) {
+                // Database kosong, ambil data dari strings.xml
+                spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
 
-            Log.d("CEKLIST", "Selected lokasi: $selectedValue, ID: $selectedId")
+                // Pemetaan lokasi dengan ID dan nama
+                val lokasiMap = spinnerItemLokasi.map {
+                    val parts = it.split(",")
+                    parts[0] to parts[1]  // (ID, Nama)
+                }.toMap()
 
-            if (selectedValue == lokasiNames[0]) {
-                binding.btLewat.isEnabled = false
+                // Ambil hanya nama lokasi untuk ditampilkan di AutoCompleteTextView
+                val lokasiNames = lokasiMap.values.toList()
+
+                // Adapter untuk AutoCompleteTextView
+                val adapterLokasi = ArrayAdapter(this, R.layout.row_spinner, lokasiNames)
+                binding.autocompleteLokasi.setAdapter(adapterLokasi)
+
+                // Listener untuk item AutoCompleteTextView
+                binding.autocompleteLokasi.setOnItemClickListener { parent, _, position, _ ->
+                    selectedValue = parent.getItemAtPosition(position) as String
+                    // Cari ID berdasarkan nama yang dipilih
+                    val selectedId = lokasiMap.filterValues { it == selectedValue }.keys.first()
+
+                    Log.d("CEKLIST", "Selected lokasi: $selectedValue, ID: $selectedId")
+
+//                    if (selectedValue == lokasiNames[0]) {
+//                        binding.btLewat.isEnabled = false
+//                    } else {
+//                        binding.btLewat.isEnabled = true
+//                        showDownloadDialog()
+//                    }
+                    showDownloadDialog()
+                }
             } else {
-                binding.btLewat.isEnabled = true
-                showDownloadDialog()
+                // Database ada isinya, ambil dari database
+                val lokasiNames = lokasiList.map { it.lokasi }.toTypedArray()
+
+                // Pemetaan lokasi dengan ID dan nama
+                lokasiMap = lokasiList.associate { it.id to it.lokasi }.toMutableMap()
+
+                // Adapter untuk AutoCompleteTextView
+                val lokasiAdapter = ArrayAdapter(this, R.layout.row_spinner, lokasiNames)
+                binding.autocompleteLokasi.setAdapter(lokasiAdapter)
+
+                // Listener untuk item AutoCompleteTextView
+                binding.autocompleteLokasi.setOnItemClickListener { parent, _, position, _ ->
+                    selectedValue = parent.getItemAtPosition(position) as String
+                    // Cari ID berdasarkan nama yang dipilih
+                    val selectedId = lokasiMap.filterValues { it == selectedValue }.keys.first()
+
+                    Log.d("CEKLIST", "Selected lokasi: $selectedValue, ID: $selectedId")
+
+//                    if (selectedValue == lokasiNames[0]) {
+//                        binding.btLewat.isEnabled = false
+//                    } else {
+//                        binding.btLewat.isEnabled = true
+//                        showDownloadDialog()
+//                    }
+                    showDownloadDialog()
+                }
             }
         }
 
-//        viewModel.lokasiList.observe(this, Observer { lokasiList ->
-//            if (lokasiList.isNullOrEmpty()) {
-//                // Jika database kosong, gunakan string-array dari resources
-//                spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
-//                val lokasiMap = spinnerItemLokasi.map {
-//                    val parts = it.split(",")
-//                    parts[0] to parts[1]  // (ID, Nama)
-//                }.toMap()
-//                val lokasiNames = lokasiMap.values.toList()
-//
-//                // Adapter untuk AutoCompleteTextView dari string-array
-//                val adapterLokasi = ArrayAdapter(this, R.layout.row_spinner, lokasiNames)
-//                binding.autocompleteLokasi.setAdapter(adapterLokasi)
-//
-//                // Listener untuk AutoCompleteTextView
-//                binding.autocompleteLokasi.setOnItemClickListener { parent, _, position, _ ->
-//                    selectedValue = parent.getItemAtPosition(position) as String
-//                    val selectedId = lokasiMap.filterValues { it == selectedValue }.keys.first()
-//                    Log.d("CEKLIST", "Selected lokasi: $selectedValue, ID: $selectedId")
-//                    handleButtonState(lokasiNames)
-//                }
-//            } else {
-//                // Jika database berisi data, gunakan data dari database
-//                val lokasiNames = lokasiList.map { it.lokasi }
-//
-//                // Adapter untuk AutoCompleteTextView dari database
-//                val adapterLokasi = ArrayAdapter(this, R.layout.row_spinner, lokasiNames)
-//                binding.autocompleteLokasi.setAdapter(adapterLokasi)
-//
-//                // Listener untuk AutoCompleteTextView
-//                binding.autocompleteLokasi.setOnItemClickListener { parent, _, position, _ ->
-//                    selectedValue = parent.getItemAtPosition(position) as String
-//                    val selectedLokasi = lokasiList.firstOrNull { it.lokasi == selectedValue }
-//                    selectedLokasi?.let {
-//                        Log.d("CEKLIST", "Selected lokasi: ${it.lokasi}, ID: ${it.id}")
-//                        handleButtonState(lokasiNames)
-//                    }
-//                }
-//            }
-//        })
-//
-//        // Panggil ViewModel untuk memuat data dari database
-//        viewModel.loadLokasiFromDatabase()
-
-        binding.btLewat.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
+        // Load data lokasi dari database
+        viewModel.loadLokasiFromDatabase()
+        binding.btLewat.isEnabled = false
+//        binding.btLewat.setOnClickListener {
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//        }
     }
 
     private fun showDownloadDialog() {
@@ -179,6 +169,10 @@ class LandingActivity : AppCompatActivity() {
                     viewModel.fetchDataAndSaveToDatabase(user.token, stringLokasi)
                     viewModel.optionToDatabase(user.token)
                     dialogShown = false // Reset dialogShown setelah dialog ditutup
+                    binding.btLewat.setOnClickListener {
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
                 .setNegativeButton("Tidak") { dialog, which ->
                     dialog.dismiss()
@@ -193,24 +187,25 @@ class LandingActivity : AppCompatActivity() {
                 when (result) {
                     is Result.Success -> {
                         showToast("Data berhasil diambil!")
+                        binding.btLewat.isEnabled = true
+                        binding.btLewat.setOnClickListener {
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
 
                     is Result.Error -> {
                         showToast("Gagal mengambil data. Silakan coba lagi.")
+                        binding.btLewat.isEnabled = true
+                        binding.btLewat.setOnClickListener {
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
                 }
             }
         }
     }
-
-//    private fun handleButtonState(lokasiNames: List<String>) {
-//        if (selectedValue == lokasiNames[0]) {
-//            binding.btLewat.isEnabled = false
-//        } else {
-//            binding.btLewat.isEnabled = true
-//            showDownloadDialog()
-//        }
-//    }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
