@@ -39,14 +39,18 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
 class DetailRemoteFragment : Fragment() {
     private val REQUEST_IMAGE_CAPTURE = 1
     private var imageUri: Uri? = null
+
+    private var date: String? = ""
 
     private lateinit var binding: FragmentDetailRemoteBinding
     private lateinit var viewModel: DetailRemoteViewModel
@@ -56,6 +60,13 @@ class DetailRemoteFragment : Fragment() {
     private lateinit var spinnerItemKegiatan: Array<String>
     private lateinit var spinnerItemSk: Array<String>
     private lateinit var spinnerItemStatus: Array<String>
+    private lateinit var spinnerItemPetak: Array<String>
+    private lateinit var spinnerItemSkKawasanKerja: Array<String>
+    private lateinit var spinnerItemStatusAreaTanam: Array<String>
+
+    private lateinit var spinnerIdPetak: List<String>
+    private lateinit var spinnerIdSkKawasanKerja: List<String>
+    private lateinit var spinnerIdStatusAreaTanam: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,19 +79,7 @@ class DetailRemoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments?.getString("SCANNED_DATA").toString().toInt()
-        val idStr = arguments?.getString("SCANNED_DATA").toString()
         val factory = DetailRemoteViewModelFactory.createFactory(requireActivity(), id)
-
-        Log.d("CEK FIRST CHAR OF ID DETAILREMOTE1", idStr)
-
-        if (idStr.isNotEmpty()) {
-            Log.d("CEK FIRST CHAR OF ID DETAILREMOTE2", "${idStr.first()}")
-            if (idStr.first() == '1') {
-                showDasField()
-            }
-        } else {
-            Log.d("CEK FIRST CHAR OF ID DETAILREMOTE3", "ID is empty.")
-        }
 
         viewModel = ViewModelProvider(this, factory)[DetailRemoteViewModel::class.java]
         viewModel.getRemoteData.observe(viewLifecycleOwner) { remoteEntity ->
@@ -97,7 +96,7 @@ class DetailRemoteFragment : Fragment() {
                     val data = Entity(
                         id = id,
                         image = imageUri.toString(),
-                        tanggal = tvTanggalisi.text.toString(),
+                        tanggal = date,
                         tanggalModified = getCurrentDateTime(),
                         easting = etLat.text.toString().toDouble(),
                         northing = etLong.text.toString().toDouble(),
@@ -109,6 +108,9 @@ class DetailRemoteFragment : Fragment() {
                         status = spinStatus.selectedItemId.toInt() + 1,
                         tinggi = etTinggi.text.toString().toDouble(),
                         diameter = etDia.text.toString().toDouble()
+
+                        //TODO: tambahkan petak, skKawasanKerja, statusAreaTanam dengan kondisi cek id
+
                     )
                     viewModel.saveLocal(data)
                     showToast("Data telah berhasil disimpan!")
@@ -138,7 +140,7 @@ class DetailRemoteFragment : Fragment() {
             binding.apply {
                 imageUri = entity.images?.toUri()
                 val id = entity.id_tanaman
-                val date = entity.tanggal_tanam
+                date = entity.tanggal_tanam
                 val jenTanId = entity.id_jenis - 1
                 val lokasiId = entity.id_lokasi - 1
                 val kegiatanId = entity.id_kegiatan - 1
@@ -146,6 +148,8 @@ class DetailRemoteFragment : Fragment() {
                 val statusId = entity.id_status - 1
                 val tinggi = entity.tinggi
                 val diameter = entity.diameter
+
+                val idStr = id.toString()
 
                 spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
                 val spinnerIdJenis = spinnerItemJenis.map { it.split(",")[1] }.drop(1)
@@ -199,7 +203,7 @@ class DetailRemoteFragment : Fragment() {
 
                 cvImagePreview.setImageURI(imageUri)
                 tvIdisi.text = id.toString()
-                tvTanggalisi.text = date
+                tvTanggalisi.text = date?.let { parseDate(it) }
                 etTinggi.setText(tinggi.toString())
                 etDia.setText(diameter.toString())
 
@@ -244,6 +248,50 @@ class DetailRemoteFragment : Fragment() {
                         break
                     }
                 }
+
+                Log.d("CEK FIRST CHAR OF ID DETAILREMOTE1", idStr)
+
+                if (idStr.isNotEmpty()) {
+                    Log.d("CEK FIRST CHAR OF ID DETAILREMOTE2", "${idStr.first()}")
+                    if (checkId(idStr)) {
+                        showDasField()
+
+                        spinnerItemPetak = resources.getStringArray(R.array.array_petak)
+                        spinnerIdPetak = spinnerItemPetak.map { it.split(",")[1] }
+                        val adapterPetak = ArrayAdapter(
+                            requireContext(),
+                            R.layout.row_spinner,
+                            spinnerIdPetak
+                        )
+                        adapterPetak.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                        spinPetak.adapter = adapterPetak
+
+                        spinnerItemSkKawasanKerja = resources.getStringArray(R.array.array_sk_kk)
+                        spinnerIdSkKawasanKerja = spinnerItemSkKawasanKerja.map { it.split(",")[1] }
+                        val adapterSkKawasanKerja = ArrayAdapter(
+                            requireContext(),
+                            R.layout.row_spinner,
+                            spinnerIdSkKawasanKerja
+                        )
+                        adapterSkKawasanKerja.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                        spinSkKk.adapter = adapterSkKawasanKerja
+
+                        spinnerItemStatusAreaTanam = resources.getStringArray(R.array.array_status_area_tanam)
+                        spinnerIdStatusAreaTanam = spinnerItemStatusAreaTanam.map { it.split(",")[1] }
+                        val adapterStatusAreaTanam = ArrayAdapter(
+                            requireContext(),
+                            R.layout.row_spinner,
+                            spinnerIdStatusAreaTanam
+                        )
+                        adapterStatusAreaTanam.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                        spinStatusAreaTanam.adapter = adapterStatusAreaTanam
+
+                        //TODO: GET DATA FROM REMOTE DATABASE AND SET IT INTO THE VIEW
+                    }
+                } else {
+                    Log.d("CEK FIRST CHAR OF ID DETAILREMOTE3", "ID is empty.")
+                }
+
             }
         }
     }
@@ -255,6 +303,11 @@ class DetailRemoteFragment : Fragment() {
         binding.spinSkKk.visibility = View.VISIBLE
         binding.tvStatusAreaTanam.visibility = View.VISIBLE
         binding.spinStatusAreaTanam.visibility = View.VISIBLE
+    }
+
+    private fun checkId(id: String) : Boolean {
+        val isDas : Boolean = id.first() == '1'
+        return isDas
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -366,6 +419,21 @@ class DetailRemoteFragment : Fragment() {
         return dateFormat.format(calendar.time)
     }
 
+    private fun parseDate(date: String): String {
+        var outputDate: String
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        inputFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
+        try {
+            val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            outputFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
+            outputDate = outputFormat.format((inputFormat.parse(date) ?: Date()).time)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            outputDate = date
+        }
+        return outputDate
+    }
+
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -378,7 +446,13 @@ class DetailRemoteFragment : Fragment() {
                     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val formattedDate = dateFormat.format(selectedDate.time)
-                binding.tvTanggalisi.text = formattedDate
+
+                val dateFormatForTextDisplay = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                dateFormatForTextDisplay.timeZone = TimeZone.getTimeZone("GMT+8:00")
+                val dateForTextDisplay = dateFormatForTextDisplay.format(selectedDate.time)
+
+                date = formattedDate
+                binding.tvTanggalisi.text = dateForTextDisplay
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),

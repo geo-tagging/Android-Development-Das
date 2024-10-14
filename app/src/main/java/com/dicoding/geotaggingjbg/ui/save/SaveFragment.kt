@@ -61,6 +61,8 @@ class SaveFragment : Fragment() {
     private var longitude: String = "0.0"
     private var elevation: String = "0.0"
 
+    private var date: String = ""
+
     private var verif: Int = 1
     private val REQUEST_IMAGE_CAPTURE = 1
 
@@ -72,6 +74,10 @@ class SaveFragment : Fragment() {
     private lateinit var spinnerItemPetak: Array<String>
     private lateinit var spinnerItemSkKawasanKerja: Array<String>
     private lateinit var spinnerItemStatusAreaTanam: Array<String>
+
+    private lateinit var spinnerIdPetak: List<String>
+    private lateinit var spinnerIdSkKawasanKerja: List<String>
+    private lateinit var spinnerIdStatusAreaTanam: List<String>
 
     private var selectedJenisId: Int = -1
     private var selectedLokasiId: Int = -1
@@ -93,9 +99,40 @@ class SaveFragment : Fragment() {
 
             if (id.isNotEmpty()) {
                 Log.d("CEK FIRST CHAR OF ID SAVE2", "${id.first()}")
-                if (id.first() == '1') {
+
+                if (checkId(id)) {
                     showDasField()
 
+                    spinnerItemPetak = resources.getStringArray(R.array.array_petak)
+                    spinnerIdPetak = spinnerItemPetak.map { it.split(",")[1] }
+                    val adapterPetak = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        spinnerIdPetak
+                    )
+                    adapterPetak.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                    binding.spinPetak.adapter = adapterPetak
+
+                    spinnerItemSkKawasanKerja = resources.getStringArray(R.array.array_sk_kk)
+                    spinnerIdSkKawasanKerja = spinnerItemSkKawasanKerja.map { it.split(",")[1] }
+                    val adapterSkKawasanKerja = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        spinnerIdSkKawasanKerja
+                    )
+                    adapterSkKawasanKerja.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                    binding.spinSkKk.adapter = adapterSkKawasanKerja
+
+                    spinnerItemStatusAreaTanam =
+                        resources.getStringArray(R.array.array_status_area_tanam)
+                    spinnerIdStatusAreaTanam = spinnerItemStatusAreaTanam.map { it.split(",")[1] }
+                    val adapterStatusAreaTanam = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        spinnerIdStatusAreaTanam
+                    )
+                    adapterStatusAreaTanam.setDropDownViewResource(R.layout.row_spinners_dropdown)
+                    binding.spinStatusAreaTanam.adapter = adapterStatusAreaTanam
                 }
             } else {
                 Log.d("CEK FIRST CHAR OF ID SAVE3", "ID is empty.")
@@ -202,7 +239,8 @@ class SaveFragment : Fragment() {
             binding.etLong.setText(northing.toString())
             binding.etElev.setText(elevationText.toString())
 
-            binding.tvTanggalisi.text = getCurrentDateTime()
+            date = getCurrentDateTime()
+            binding.tvTanggalisi.text = getCurrentDateTimeForDisplay()
         }
 
         binding.btBatal.setOnClickListener {
@@ -220,7 +258,11 @@ class SaveFragment : Fragment() {
             val northingText = binding.etLong.text.toString()
             val tinggiET = binding.etTinggi.text.toString()
             val diaET = binding.etDia.text.toString()
-            val tanggal = binding.tvTanggalisi.text.toString()
+            val tanggal = date
+
+            var selectedPetak: String?
+            var selectedSkKawasanKerja: String?
+            var selectedStatusAreaTanam: String?
 
 //            val selectedJenis = binding.spinJentan.selectedItem.toString()
 //            Log.d("CEKSPINNER1SAVE", "${selectedJenis}, ${spinnerIdJenis[0]}")
@@ -232,6 +274,27 @@ class SaveFragment : Fragment() {
             Log.d("CEKSPINNER4SAVE", "${selectedSk}, ${spinnerIdSk[0]}")
             val selectedStatus = binding.spinStatus.selectedItem.toString()
             Log.d("CEKSPINNER5SAVE", "${selectedStatus}, ${spinnerIdStatus[0]}")
+
+            if (checkId(id)) {
+                selectedPetak = binding.spinPetak.selectedItem.toString()
+                Log.d("CEK DAS FIELD1", "${selectedPetak}, ${spinnerIdPetak[0]}")
+
+                selectedSkKawasanKerja = binding.spinSkKk.selectedItem.toString()
+                Log.d("CEK DAS FIELD2", "${selectedSkKawasanKerja}, ${spinnerIdSkKawasanKerja[0]}")
+
+                selectedStatusAreaTanam = binding.spinStatusAreaTanam.selectedItem.toString()
+                Log.d(
+                    "CEK DAS FIELD3",
+                    "${selectedStatusAreaTanam}, ${spinnerIdStatusAreaTanam[0]}"
+                )
+            } else {
+                selectedPetak = null
+                Log.d("CEK NULL DAS FIELD1", "$selectedPetak")
+                selectedSkKawasanKerja = null
+                Log.d("CEK NULL DAS FIELD2", "$selectedSkKawasanKerja")
+                selectedStatusAreaTanam = null
+                Log.d("CEK NULL DAS FIELD3", "$selectedStatusAreaTanam")
+            }
 
             Log.d("isi imageuri", imageUri.toString())
 
@@ -278,6 +341,11 @@ class SaveFragment : Fragment() {
         binding.spinSkKk.visibility = View.VISIBLE
         binding.tvStatusAreaTanam.visibility = View.VISIBLE
         binding.spinStatusAreaTanam.visibility = View.VISIBLE
+    }
+
+    private fun checkId(id: String): Boolean {
+        val isDas: Boolean = id.first() == '1'
+        return isDas
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -388,6 +456,13 @@ class SaveFragment : Fragment() {
         return dateFormat.format(calendar.time)
     }
 
+    private fun getCurrentDateTimeForDisplay(): String {
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
+        return dateFormat.format(calendar.time)
+    }
+
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -398,12 +473,15 @@ class SaveFragment : Fragment() {
                 }
                 val dateFormat =
                     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                //TODO: konfirmasi kembali ke Rai mengenai timezone
                 dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val formattedDate = dateFormat.format(selectedDate.time)
-//                val formatDateforTextDisplay = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-                //TODO: alt: buat satu textView untuk menampung tanggal lengkap, tapi buat invisible, itu yg disimpan datanya, tapi displaynya hanya tanggal saja
-                binding.tvTanggalisi.text = formattedDate
+
+                val dateFormatForTextDisplay = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                dateFormatForTextDisplay.timeZone = TimeZone.getTimeZone("GMT+8:00")
+                val dateForTextDisplay = dateFormatForTextDisplay.format(selectedDate.time)
+
+                date = formattedDate
+                binding.tvTanggalisi.text = dateForTextDisplay
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
