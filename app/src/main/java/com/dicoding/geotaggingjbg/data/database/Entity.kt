@@ -22,10 +22,16 @@ data class Entity(
     var lokasi: Int = 0,
     @ColumnInfo(name = "kegiatan")
     var kegiatan: Int = 0,
+    @ColumnInfo(name = "petak")
+    var petak: Int = 0,
     @ColumnInfo(name = "sk")
     var sk: Int = 0,
+    @ColumnInfo(name = "skKerja")
+    var skKerja: Int = 0,
     @ColumnInfo(name = "status")
     var status: Int = 0,
+    @ColumnInfo(name = "statusAreaTanam")
+    var statusAreaTanam: Int = 0,
 
     @ColumnInfo(name = "tanggal")
     var tanggal: String? = null,

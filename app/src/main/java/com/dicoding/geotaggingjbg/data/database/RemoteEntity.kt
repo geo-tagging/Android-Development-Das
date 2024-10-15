@@ -18,10 +18,16 @@ data class RemoteEntity(
     var id_kegiatan: Int = 0,
     @ColumnInfo(name = "lokasi")
     var id_lokasi: Int = 0,
+    @ColumnInfo(name = "petak")
+    var id_petak: Int = 0,
     @ColumnInfo(name = "skppkh")
     var id_sk: Int = 0,
+    @ColumnInfo(name = "sk_kerja")
+    var id_skKerja: Int = 0,
     @ColumnInfo(name = "status")
     var id_status: Int = 0,
+    @ColumnInfo(name = "status_area_tanam")
+    var id_statusAreaTanam: Int = 0,
 
     @ColumnInfo(name = "tinggi")
     var tinggi: Double = 0.0,

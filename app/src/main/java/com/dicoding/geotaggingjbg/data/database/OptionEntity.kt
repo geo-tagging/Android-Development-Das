@@ -37,3 +37,24 @@ data class SkEntity(
     val id: Int,
     val sk: String
 )
+
+@Entity(tableName = "tb_skKerja")
+data class SkKerjaEntity(
+    @PrimaryKey(autoGenerate = false)
+    val id: Int,
+    val skKerja: String
+)
+
+@Entity(tableName = "tb_status_areaTanam")
+data class StatusAreaTanamEntity(
+    @PrimaryKey(autoGenerate = false)
+    val id: Int,
+    val statusAreaTanam: String
+)
+
+@Entity(tableName = "tb_petak")
+data class PetakEntity(
+    @PrimaryKey(autoGenerate = false)
+    val id: Int,
+    val petakUkur: String
+)
