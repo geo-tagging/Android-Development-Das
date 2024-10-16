@@ -107,7 +107,7 @@ class HomeFragment : Fragment() {
             adapter.setOnItemClickCallback(object : HomeAdapter.OnItemClickCallback {
                 override fun onItemClicked(data: Entity) {
                     val bundle = Bundle().apply {
-                        putString("SCANNED_DATA", data.id.toString())
+                        putInt("SCANNED_DATA", data.id)
                     }
                     val detailFragment = DetailFragment()
                     detailFragment.arguments = bundle
@@ -152,8 +152,11 @@ class HomeFragment : Fragment() {
                                     put("id_jenis", entity.jenTan)
                                     put("id_kegiatan", entity.kegiatan)
                                     put("id_lokasi", entity.lokasi)
+                                    put("id_petak", entity.petak)
                                     put("id_sk", entity.sk)
+                                    put("id_skKerja", entity.skKerja)
                                     put("id_status", entity.status)
+                                    put("id_statusAreaTanam", entity.statusAreaTanam)
                                     put("diameter", entity.diameter)
                                     put("tinggi", entity.tinggi)
                                     put("tanggal_tanam", entity.tanggal)
