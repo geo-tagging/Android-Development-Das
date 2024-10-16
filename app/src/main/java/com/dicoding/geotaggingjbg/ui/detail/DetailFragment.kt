@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -30,6 +31,10 @@ import com.dicoding.geotaggingjbg.BuildConfig
 import com.dicoding.geotaggingjbg.R
 import com.dicoding.geotaggingjbg.data.database.Entity
 import com.dicoding.geotaggingjbg.databinding.FragmentDetailBinding
+import com.dicoding.geotaggingjbg.databinding.FragmentSaveBinding
+import com.dicoding.geotaggingjbg.ui.home.HomeFragment
+import com.dicoding.geotaggingjbg.ui.save.SaveViewModel
+import com.dicoding.geotaggingjbg.ui.save.SaveViewModelFactory
 import com.dicoding.geotaggingjbg.ui.utils.createCustomTempFile
 import com.dicoding.geotaggingjbg.ui.utils.reduceFileImage
 import com.dicoding.geotaggingjbg.ui.utils.uriToFile
@@ -52,47 +57,36 @@ class DetailFragment : Fragment() {
 
     private var date: String? = ""
 
-    private lateinit var binding: FragmentDetailBinding
-    private lateinit var viewModel: DetailViewModel
+    private val binding get() = _binding!!
+    private var _binding: FragmentDetailBinding? = null
+    private val viewModel: DetailViewModel by viewModels {
+        DetailViewModelFactory.getInstance(requireContext().applicationContext, id)
+    }
 
-    private lateinit var spinnerItemJenis: Array<String>
-    private lateinit var spinnerItemLokasi: Array<String>
-    private lateinit var spinnerItemKegiatan: Array<String>
-    private lateinit var spinnerItemSk: Array<String>
-    private lateinit var spinnerItemStatus: Array<String>
-    private lateinit var spinnerItemPetak: Array<String>
-    private lateinit var spinnerItemSkKawasanKerja: Array<String>
-    private lateinit var spinnerItemStatusAreaTanam: Array<String>
-
-    private lateinit var spinnerIdPetak: List<String>
-    private lateinit var spinnerIdSkKawasanKerja: List<String>
-    private lateinit var spinnerIdStatusAreaTanam: List<String>
+    private var id: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val id = arguments?.getString("SCANNED_DATA").toString().toInt()
-        val factory = DetailViewModelFactory.createFactory(requireActivity(), id)
 
-        viewModel = ViewModelProvider(this, factory)[DetailViewModel::class.java]
-        viewModel.getData.observe(viewLifecycleOwner) { entity ->
+        id = arguments?.getInt("SCANNED_DATA") ?: 0
+        viewModel.getData.observe(viewLifecycleOwner){entity ->
             showDetail(entity)
         }
-        binding.btHapus.setOnClickListener {
+        binding.btHapus.setOnClickListener{
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
             alertDialogBuilder.setTitle("Konfirmasi Hapus Data")
             alertDialogBuilder.setMessage("Apakah anda yakin ingin menghapus data?")
             alertDialogBuilder.setPositiveButton("Ya") { _, _ ->
                 viewModel.deleteData()
-                requireView().findNavController()
-                    .navigate(R.id.action_navigation_detail_to_navigation_home)
+                requireView().findNavController().navigate(R.id.action_navigation_detail_to_navigation_home)
             }
             alertDialogBuilder.setNegativeButton("Tidak") { dialog, _ ->
                 dialog.dismiss()
@@ -100,10 +94,10 @@ class DetailFragment : Fragment() {
             alertDialogBuilder.show()
         }
         binding.btSimpan.setOnClickListener {
-            if (imageUri != null) {
+            if(imageUri != null){
                 viewModel.getData.value?.let { entity ->
                     binding.apply {
-                        if (imageUri != null) {
+                        if (imageUri != null){
                             entity.image = imageUri.toString()
                         }
                         entity.tanggal = date
@@ -118,17 +112,17 @@ class DetailFragment : Fragment() {
                         entity.status = spinStatus.selectedItemId.toInt() + 1
                         entity.tinggi = etTinggi.text.toString().toDouble()
                         entity.diameter = etDia.text.toString().toDouble()
-
-                        //TODO: tambahkan petak, skKawasanKerja, statusAreaTanam dengan kondisi cek id
-
+                        entity.skKerja = spinSkKk.selectedItemId.toInt() + 1
+                        entity.statusAreaTanam = spinStatusAreaTanam.selectedItemId.toInt() + 1
+                        entity.petak = spinPetak.selectedItemId.toInt() + 1
                         Log.d("Entity null", entity.toString())
                         viewModel.updateData(entity)
                     }
                 }
                 showToast("Update data berhasil")
                 it.findNavController().navigate(R.id.action_navigation_detail_to_navigation_home)
-            } else {
-                showToast("Harap ambil gambar terlebih dahulu!")
+            } else{
+            showToast("Harap ambil gambar terlebih dahulu!")
             }
         }
 
@@ -136,11 +130,11 @@ class DetailFragment : Fragment() {
             dispatchTakePictureIntent()
         }
 
-        binding.ivClose.setOnClickListener {
+        binding.ivClose.setOnClickListener{
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        binding.iconDate.setOnClickListener {
+        binding.iconDate.setOnClickListener{
             showDatePickerDialog()
         }
     }
@@ -151,50 +145,93 @@ class DetailFragment : Fragment() {
                 imageUri = entity.image?.toUri()
                 val id = entity.id
                 date = entity.tanggal
-                val jenTanId = entity.jenTan - 1
-                val lokasiId = entity.lokasi - 1
-                val kegiatanId = entity.kegiatan - 1
-                val skId = entity.sk - 1
-                val statusId = entity.status - 1
+                val jenTanId = entity.jenTan
+                val lokasiId = entity.lokasi
+                val kegiatanId = entity.kegiatan
+                val skId = entity.sk
+                val statusId = entity.status
+                val skKerjaId = entity.skKerja
+                val statusAreaTanamId = entity.statusAreaTanam
+                val petakId = entity.petak
                 val tinggi = entity.tinggi
                 val diameter = entity.diameter
 
                 val idStr = id.toString()
 
                 //TODO: Combine spinner with AutoCompleteTextView
-                spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
-                val spinnerIdJenis = spinnerItemJenis.map { it.split(",")[1] }.drop(1)
-                val adapterJenis =
-                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdJenis)
-                adapterJenis.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                binding.spinJentan.adapter = adapterJenis
+                viewModel.loadAllDataFromDatabase()
 
-                spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
-                val spinnerIdLokasi = spinnerItemLokasi.map { it.split(",")[1] }.drop(1)
-                val adapterLokasi =
-                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdLokasi)
-                adapterLokasi.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                binding.spinLokasi.adapter = adapterLokasi
+                // Observasi data dari ViewModel dan update adapter spinner
+                viewModel.jenisList.observe(viewLifecycleOwner) { jenisList ->
+                    val adapterJenis = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        jenisList.map { it.nama }
+                    )
+                    binding.spinJentan.adapter = adapterJenis
 
-                spinnerItemKegiatan = resources.getStringArray(R.array.array_kegiatan)
-                val spinnerIdKegiatan = spinnerItemKegiatan.map { it.split(",")[1] }.drop(1)
-                val adapterKegiatan =
-                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdKegiatan)
-                adapterKegiatan.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                binding.spinKegiatan.adapter = adapterKegiatan
+                    // Cari posisi dari jenTanId dan set spinner
+                    val indexJenis = jenisList.indexOfFirst { it.id == jenTanId }
+                    if (indexJenis >= 0) {
+                        binding.spinJentan.setSelection(indexJenis)
+                    }
+                }
 
-                spinnerItemSk = resources.getStringArray(R.array.array_sk)
-                val spinnerIdSk = spinnerItemSk.map { it.split(",")[1] }.drop(1)
-                val adapterSk = ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdSk)
-                adapterSk.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                binding.spinSk.adapter = adapterSk
+                viewModel.lokasiList.observe(viewLifecycleOwner) { lokasiList ->
+                    val adapterLokasi = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        lokasiList.map { it.lokasi }
+                    )
+                    binding.spinLokasi.adapter = adapterLokasi
 
-                spinnerItemStatus = resources.getStringArray(R.array.array_status)
-                val spinnerIdStatus = spinnerItemStatus.map { it.split(",")[1] }.drop(1)
-                val adapterStatus =
-                    ArrayAdapter(requireContext(), R.layout.row_spinner, spinnerIdStatus)
-                adapterStatus.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                binding.spinStatus.adapter = adapterStatus
+                    val indexLokasi = lokasiList.indexOfFirst { it.id == lokasiId }
+                    if (indexLokasi >= 0) {
+                        binding.spinLokasi.setSelection(indexLokasi)
+                    }
+                }
+
+                viewModel.kegiatanList.observe(viewLifecycleOwner) { kegiatanList ->
+                    val adapterKegiatan = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        kegiatanList.map { it.kegiatan }
+                    )
+                    binding.spinKegiatan.adapter = adapterKegiatan
+
+                    val indexKegiatan = kegiatanList.indexOfFirst { it.id == kegiatanId }
+                    if (indexKegiatan >= 0) {
+                        binding.spinKegiatan.setSelection(indexKegiatan)
+                    }
+                }
+
+                viewModel.skList.observe(viewLifecycleOwner) { skList ->
+                    val adapterSk = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        skList.map { it.sk }
+                    )
+                    binding.spinSk.adapter = adapterSk
+
+                    val indexSk = skList.indexOfFirst { it.id == skId }
+                    if (indexSk >= 0) {
+                        binding.spinSk.setSelection(indexSk)
+                    }
+                }
+
+                viewModel.statusList.observe(viewLifecycleOwner) { statusList ->
+                    val adapterStatus = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        statusList.map { it.status }
+                    )
+                    binding.spinStatus.adapter = adapterStatus
+
+                    val indexStatus = statusList.indexOfFirst { it.id == statusId }
+                    if (indexStatus >= 0) {
+                        binding.spinStatus.setSelection(indexStatus)
+                    }
+                }
 
                 cvImagePreview.setImageURI(imageUri)
                 tvIdisi.text = id.toString()
@@ -209,41 +246,6 @@ class DetailFragment : Fragment() {
                 val elevEdit = entity.elevasi
                 etElev.setText(elevEdit.toString())
 
-                for ((index, item) in spinnerItemJenis.withIndex()) {
-                    if (item.split(",")[0].toInt() == jenTanId) {
-                        spinJentan.setSelection(index)
-                        break
-                    }
-                }
-
-                for ((index, item) in spinnerItemLokasi.withIndex()) {
-                    if (item.split(",")[0].toInt() == lokasiId) {
-                        spinLokasi.setSelection(index)
-                        break
-                    }
-                }
-
-                for ((index, item) in spinnerItemKegiatan.withIndex()) {
-                    if (item.split(",")[0].toInt() == kegiatanId) {
-                        spinKegiatan.setSelection(index)
-                        break
-                    }
-                }
-
-                for ((index, item) in spinnerItemSk.withIndex()) {
-                    if (item.split(",")[0].toInt() == skId) {
-                        spinSk.setSelection(index)
-                        break
-                    }
-                }
-
-                for ((index, item) in spinnerItemStatus.withIndex()) {
-                    if (item.split(",")[0].toInt() == statusId) {
-                        spinStatus.setSelection(index)
-                        break
-                    }
-                }
-
                 Log.d("CEK FIRST CHAR OF ID DETAIL1", idStr)
 
                 if (idStr.isNotEmpty()) {
@@ -251,37 +253,49 @@ class DetailFragment : Fragment() {
                     if (checkId(idStr)) {
                         showDasField()
 
-                        spinnerItemPetak = resources.getStringArray(R.array.array_petak)
-                        spinnerIdPetak = spinnerItemPetak.map { it.split(",")[1] }
-                        val adapterPetak = ArrayAdapter(
-                            requireContext(),
-                            R.layout.row_spinner,
-                            spinnerIdPetak
-                        )
-                        adapterPetak.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                        spinPetak.adapter = adapterPetak
+                        viewModel.skKerjaList.observe(viewLifecycleOwner) { skKerjaList ->
+                            val adapterSkKerja = ArrayAdapter(
+                                requireContext(),
+                                R.layout.row_spinner,
+                                skKerjaList.map { it.skKerja }
+                            )
+                            binding.spinSkKk.adapter = adapterSkKerja
 
-                        spinnerItemSkKawasanKerja = resources.getStringArray(R.array.array_sk_kk)
-                        spinnerIdSkKawasanKerja = spinnerItemSkKawasanKerja.map { it.split(",")[1] }
-                        val adapterSkKawasanKerja = ArrayAdapter(
-                            requireContext(),
-                            R.layout.row_spinner,
-                            spinnerIdSkKawasanKerja
-                        )
-                        adapterSkKawasanKerja.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                        spinSkKk.adapter = adapterSkKawasanKerja
+                            val indexSkKerja = skKerjaList.indexOfFirst { it.id == skKerjaId }
+                            if (indexSkKerja >= 0) {
+                                binding.spinSkKk.setSelection(indexSkKerja)
+                            }
+                        }
 
-                        spinnerItemStatusAreaTanam = resources.getStringArray(R.array.array_status_area_tanam)
-                        spinnerIdStatusAreaTanam = spinnerItemStatusAreaTanam.map { it.split(",")[1] }
-                        val adapterStatusAreaTanam = ArrayAdapter(
-                            requireContext(),
-                            R.layout.row_spinner,
-                            spinnerIdStatusAreaTanam
-                        )
-                        adapterStatusAreaTanam.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                        spinStatusAreaTanam.adapter = adapterStatusAreaTanam
+                        // SK
+                        viewModel.statusAreaTanamEntity.observe(viewLifecycleOwner) { statusAreaTanamList ->
+                            val adapterStatusAreaTanam = ArrayAdapter(
+                                requireContext(),
+                                R.layout.row_spinner,
+                                statusAreaTanamList.map { it.statusAreaTanam }
+                            )
+                            binding.spinStatusAreaTanam.adapter = adapterStatusAreaTanam
 
-                        //TODO: GET DATA FROM DATABASE AND SET IT INTO THE VIEW
+                            val indexStatusAreaTanam = statusAreaTanamList.indexOfFirst { it.id == statusAreaTanamId }
+                            if (indexStatusAreaTanam >= 0) {
+                                binding.spinStatusAreaTanam.setSelection(indexStatusAreaTanam)
+                            }
+                        }
+
+                        // Status
+                        viewModel.petakList.observe(viewLifecycleOwner) { petakList ->
+                            val adapterPetak = ArrayAdapter(
+                                requireContext(),
+                                R.layout.row_spinner,
+                                petakList.map { it.petakUkur }
+                            )
+                            binding.spinPetak.adapter = adapterPetak
+
+                            val indexPetak = petakList.indexOfFirst { it.id == petakId }
+                            if (indexPetak >= 0) {
+                                binding.spinPetak.setSelection(indexPetak)
+                            }
+                        }
                     }
                 } else {
                     Log.d("CEK FIRST CHAR OF ID DETAIL3", "ID is empty.")
@@ -357,40 +371,6 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun reduceFileSize(file: File, maxWidth: Int, maxHeight: Int): File? {
-        try {
-            // Decode the image file to get its dimensions
-            val options = BitmapFactory.Options().apply {
-                inJustDecodeBounds = true
-            }
-            BitmapFactory.decodeFile(file.absolutePath, options)
-
-            // Calculate the scaling factor
-            val scaleFactor = Math.min(
-                options.outWidth / maxWidth,
-                options.outHeight / maxHeight
-            )
-
-            // Decode the image file into a smaller bitmap
-            options.inJustDecodeBounds = false
-            options.inSampleSize = scaleFactor
-            val resizedBitmap = BitmapFactory.decodeFile(file.absolutePath, options)
-
-            // Create a new file to save the resized bitmap
-            val resizedFile = createCustomTempFile(requireContext())
-
-            // Save the resized bitmap to the new file
-            FileOutputStream(resizedFile).use { out ->
-                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out)
-            }
-
-            return resizedFile
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
     private fun reduceImageAsync(imageFile: File, callback: (File) -> Unit) {
         // Menjalankan kompresi gambar secara asinkron di lifecycleScope
         lifecycleScope.launch(Dispatchers.IO) {
@@ -436,15 +416,12 @@ class DetailFragment : Fragment() {
                 val selectedDate = Calendar.getInstance().apply {
                     set(year, month, dayOfMonth)
                 }
-                val dateFormat =
-                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val formattedDate = dateFormat.format(selectedDate.time)
-
                 val dateFormatForTextDisplay = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
                 dateFormatForTextDisplay.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val dateForTextDisplay = dateFormatForTextDisplay.format(selectedDate.time)
-
                 date = formattedDate
                 binding.tvTanggalisi.text = dateForTextDisplay
             },
