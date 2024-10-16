@@ -77,9 +77,11 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         id = arguments?.getInt("SCANNED_DATA") ?: 0
+        //todo: ERROR NULLPOINTEREXEPTION
         viewModel.getData.observe(viewLifecycleOwner){entity ->
             showDetail(entity)
         }
+        //TODO
         binding.btHapus.setOnClickListener{
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
             alertDialogBuilder.setTitle("Konfirmasi Hapus Data")
@@ -112,9 +114,9 @@ class DetailFragment : Fragment() {
                         entity.status = spinStatus.selectedItemId.toInt() + 1
                         entity.tinggi = etTinggi.text.toString().toDouble()
                         entity.diameter = etDia.text.toString().toDouble()
-                        entity.skKerja = spinSkKk.selectedItemId.toInt() + 1
-                        entity.statusAreaTanam = spinStatusAreaTanam.selectedItemId.toInt() + 1
-                        entity.petak = spinPetak.selectedItemId.toInt() + 1
+                        entity.skKerja = if (checkId(id.toString())) binding.spinSkKk.selectedItemId.toInt() + 1 else null
+                        entity.statusAreaTanam = if (checkId(id.toString())) binding.spinStatusAreaTanam.selectedItemId.toInt() + 1 else null
+                        entity.petak = if (checkId(id.toString())) binding.spinPetak.selectedItemId.toInt() + 1 else null
                         Log.d("Entity null", entity.toString())
                         viewModel.updateData(entity)
                     }

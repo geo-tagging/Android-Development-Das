@@ -102,9 +102,9 @@ class DetailRemoteFragment : Fragment() {
                         status = spinStatus.selectedItemId.toInt() + 1,
                         tinggi = etTinggi.text.toString().toDouble(),
                         diameter = etDia.text.toString().toDouble(),
-                        skKerja = spinSkKk.selectedItemId.toInt() + 1,
-                        statusAreaTanam = spinStatusAreaTanam.selectedItemId.toInt() + 1,
-                        petak = spinPetak.selectedItemId.toInt() + 1
+                        skKerja = if (checkId(id.toString())) binding.spinSkKk.selectedItemId.toInt() + 1 else null,
+                        statusAreaTanam = if (checkId(id.toString())) binding.spinStatusAreaTanam.selectedItemId.toInt() + 1 else null,
+                        petak = if (checkId(id.toString())) binding.spinPetak.selectedItemId.toInt() + 1 else null
                     )
                     viewModel.saveLocal(data)
                     showToast("Data telah berhasil disimpan!")

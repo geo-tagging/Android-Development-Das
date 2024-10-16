@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.DatePicker
@@ -29,6 +30,8 @@ import com.dicoding.geotaggingjbg.BuildConfig
 import com.dicoding.geotaggingjbg.R
 import com.dicoding.geotaggingjbg.data.database.Entity
 import com.dicoding.geotaggingjbg.databinding.FragmentSaveBinding
+import com.dicoding.geotaggingjbg.ui.home.HomeViewModel
+import com.dicoding.geotaggingjbg.ui.home.HomeViewModelFactory
 import com.dicoding.geotaggingjbg.ui.utils.createCustomTempFile
 import com.dicoding.geotaggingjbg.ui.utils.reduceFileImage
 import com.dicoding.geotaggingjbg.ui.utils.uriToFile
@@ -66,19 +69,6 @@ class SaveFragment : Fragment() {
     private var verif: Int = 1
     private val REQUEST_IMAGE_CAPTURE = 1
 
-    private lateinit var spinnerItemJenis: Array<String>
-    private lateinit var spinnerItemLokasi: Array<String>
-    private lateinit var spinnerItemKegiatan: Array<String>
-    private lateinit var spinnerItemSk: Array<String>
-    private lateinit var spinnerItemStatus: Array<String>
-    private lateinit var spinnerItemPetak: Array<String>
-    private lateinit var spinnerItemSkKawasanKerja: Array<String>
-    private lateinit var spinnerItemStatusAreaTanam: Array<String>
-
-    private lateinit var spinnerIdPetak: List<String>
-    private lateinit var spinnerIdSkKawasanKerja: List<String>
-    private lateinit var spinnerIdStatusAreaTanam: List<String>
-
     private var selectedJenisId: Int = -1
     private var selectedLokasiId: Int = -1
 
@@ -92,6 +82,8 @@ class SaveFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Panggil fungsi untuk memuat data dari database
+        viewModel.loadAllDataFromDatabase()
 
         if (arguments != null) {
             id = arguments?.getString("SCANNED_DATA", "ID").toString()
@@ -103,117 +95,106 @@ class SaveFragment : Fragment() {
                 if (checkId(id)) {
                     showDasField()
 
-                    spinnerItemPetak = resources.getStringArray(R.array.array_petak)
-                    spinnerIdPetak = spinnerItemPetak.map { it.split(",")[1] }
-                    val adapterPetak = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdPetak
-                    )
-                    adapterPetak.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinPetak.adapter = adapterPetak
+                    viewModel.skKerjaList.observe(viewLifecycleOwner) { skKerjaList ->
+                        val adapterSkKerja = ArrayAdapter(
+                            requireContext(),
+                            R.layout.row_spinner,
+                            skKerjaList.map { it.skKerja }
+                        )
+                        binding.spinSkKk.adapter = adapterSkKerja
+                    }
 
-                    spinnerItemSkKawasanKerja = resources.getStringArray(R.array.array_sk_kk)
-                    spinnerIdSkKawasanKerja = spinnerItemSkKawasanKerja.map { it.split(",")[1] }
-                    val adapterSkKawasanKerja = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdSkKawasanKerja
-                    )
-                    adapterSkKawasanKerja.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinSkKk.adapter = adapterSkKawasanKerja
+                    // SK
+                    viewModel.statusAreaTanamEntity.observe(viewLifecycleOwner) { statusAreaTanamList ->
+                        val adapterStatusAreaTanam = ArrayAdapter(
+                            requireContext(),
+                            R.layout.row_spinner,
+                            statusAreaTanamList.map { it.statusAreaTanam }
+                        )
+                        binding.spinStatusAreaTanam.adapter = adapterStatusAreaTanam
+                    }
 
-                    spinnerItemStatusAreaTanam =
-                        resources.getStringArray(R.array.array_status_area_tanam)
-                    spinnerIdStatusAreaTanam = spinnerItemStatusAreaTanam.map { it.split(",")[1] }
-                    val adapterStatusAreaTanam = ArrayAdapter(
-                        requireContext(),
-                        R.layout.row_spinner,
-                        spinnerIdStatusAreaTanam
-                    )
-                    adapterStatusAreaTanam.setDropDownViewResource(R.layout.row_spinners_dropdown)
-                    binding.spinStatusAreaTanam.adapter = adapterStatusAreaTanam
+                    // Status
+                    viewModel.petakList.observe(viewLifecycleOwner) { petakList ->
+                        val adapterPetak = ArrayAdapter(
+                            requireContext(),
+                            R.layout.row_spinner,
+                            petakList.map { it.petakUkur }
+                        )
+                        binding.spinPetak.adapter = adapterPetak
+                    }
                 }
             } else {
                 Log.d("CEK FIRST CHAR OF ID SAVE3", "ID is empty.")
             }
         }
 
-        spinnerItemJenis = resources.getStringArray(R.array.array_jentan)
-        // Pemetaan jenis dengan ID dan nama
-        val jenisMap = spinnerItemJenis.map {
-            val parts = it.split(",")
-            parts[0] to parts[1]  // (ID, Nama)
-        }.toMap()
+        viewModel.jenisList.observe(viewLifecycleOwner) { jenisList ->
+            val jenisMap = jenisList.associate { it.id.toString() to it.nama }  // Mapping ID dan Nama
 
-        val adapterJenis = ArrayAdapter(
-            requireContext(),
-            R.layout.row_spinner,
-//            spinnerItemJenis.map { it.split(",")[1] }
-            jenisMap.values.toList()
-        )
-        (binding.autocompleteJentan as? AutoCompleteTextView)?.apply {
-            setAdapter(adapterJenis)
-            setOnItemClickListener { _, _, position, _ ->
-//                selectedJenisId = spinnerItemJenis[position].split(",")[0].toInt()
-                val selectedName = adapterJenis.getItem(position) ?: ""
-                selectedJenisId = jenisMap.filterValues { it == selectedName }.keys.first().toInt()
-                Log.d("CEKLIST", "Selected jenis: $selectedName, ID: $selectedJenisId")
+            val adapterJenis = ArrayAdapter(
+                requireContext(),
+                R.layout.row_spinner,
+                jenisMap.values.toList()
+            )
+            (binding.autocompleteJentan as? AutoCompleteTextView)?.apply {
+                setAdapter(adapterJenis)
+                setOnItemClickListener { _, _, position, _ ->
+                    val selectedName = adapterJenis.getItem(position) ?: ""
+                    selectedJenisId = jenisMap.filterValues { it == selectedName }.keys.first().toInt()
+                    Log.d("CEKLIST", "Selected jenis: $selectedName, ID: $selectedJenisId")
+                }
             }
         }
 
-        spinnerItemLokasi = resources.getStringArray(R.array.array_lokasi)
-        // Pemetaan lokasi dengan ID dan nama
-        val lokasiMap = spinnerItemLokasi.map {
-            val parts = it.split(",")
-            parts[0] to parts[1]  // (ID, Nama)
-        }.toMap()
+        // Observe lokasiList dari ViewModel
+        viewModel.lokasiList.observe(viewLifecycleOwner) { lokasiList ->
+            val lokasiMap = lokasiList.associate { it.id.toString() to it.lokasi }  // Mapping ID dan Nama
 
-        val adapterLokasi = ArrayAdapter(
-            requireContext(),
-            R.layout.row_spinner,
-//            spinnerItemLokasi.map { it.split(",")[1] }
-            lokasiMap.values.toList() // Hanya ambil nama lokasi
-        )
-        (binding.autocompleteLokasi as? AutoCompleteTextView)?.apply {
-            setAdapter(adapterLokasi)
-            setOnItemClickListener { _, _, position, _ ->
-//                selectedLokasiId = spinnerItemLokasi[position].split(",")[0].toInt()
-                val selectedName = adapterLokasi.getItem(position) ?: ""
-                selectedLokasiId =
-                    lokasiMap.filterValues { it == selectedName }.keys.first().toInt()
-                Log.d("CEKLIST", "Selected lokasi: $selectedName, ID: $selectedLokasiId")
+            val adapterLokasi = ArrayAdapter(
+                requireContext(),
+                R.layout.row_spinner,
+                lokasiMap.values.toList()  // Hanya ambil nama lokasi
+            )
+            (binding.autocompleteLokasi as? AutoCompleteTextView)?.apply {
+                setAdapter(adapterLokasi)
+                setOnItemClickListener { _, _, position, _ ->
+                    val selectedName = adapterLokasi.getItem(position) ?: ""
+                    selectedLokasiId = lokasiMap.filterValues { it == selectedName }.keys.first().toInt()
+                    Log.d("CEKLIST", "Selected lokasi: $selectedName, ID: $selectedLokasiId")
+                }
             }
         }
-        spinnerItemKegiatan = resources.getStringArray(R.array.array_kegiatan)
-        val spinnerIdKegiatan = spinnerItemKegiatan.map { it.split(",")[1] }
-        val adapterKegiatan = ArrayAdapter(
-            requireContext(),
-            R.layout.row_spinner,
-            spinnerIdKegiatan
-        )
-        adapterKegiatan.setDropDownViewResource(R.layout.row_spinners_dropdown)
-        binding.spinKegiatan.adapter = adapterKegiatan
 
-        spinnerItemSk = resources.getStringArray(R.array.array_sk)
-        val spinnerIdSk = spinnerItemSk.map { it.split(",")[1] }
-        val adapterSk = ArrayAdapter(
-            requireContext(),
-            R.layout.row_spinner,
-            spinnerIdSk
-        )
-        adapterSk.setDropDownViewResource(R.layout.row_spinners_dropdown)
-        binding.spinSk.adapter = adapterSk
+        // Kegiatan
+        viewModel.kegiatanList.observe(viewLifecycleOwner) { kegiatanList ->
+            val adapterKegiatan = ArrayAdapter(
+                requireContext(),
+                R.layout.row_spinner,
+                kegiatanList.map { it.kegiatan }
+            )
+            binding.spinKegiatan.adapter = adapterKegiatan
+        }
 
-        spinnerItemStatus = resources.getStringArray(R.array.array_status)
-        val spinnerIdStatus = spinnerItemStatus.map { it.split(",")[1] }
-        val adapterStatus = ArrayAdapter(
-            requireContext(),
-            R.layout.row_spinner,
-            spinnerIdStatus
-        )
-        adapterStatus.setDropDownViewResource(R.layout.row_spinners_dropdown)
-        binding.spinStatus.adapter = adapterStatus
+        // SK
+        viewModel.skList.observe(viewLifecycleOwner) { skList ->
+            val adapterSk = ArrayAdapter(
+                requireContext(),
+                R.layout.row_spinner,
+                skList.map { it.sk }
+            )
+            binding.spinSk.adapter = adapterSk
+        }
+
+        // Status
+        viewModel.statusList.observe(viewLifecycleOwner) { statusList ->
+            val adapterStatus = ArrayAdapter(
+                requireContext(),
+                R.layout.row_spinner,
+                statusList.map { it.status }
+            )
+            binding.spinStatus.adapter = adapterStatus
+        }
 
         binding.btPilih.setOnClickListener {
             dispatchTakePictureIntent()
@@ -264,29 +245,10 @@ class SaveFragment : Fragment() {
             var selectedSkKawasanKerja: String?
             var selectedStatusAreaTanam: String?
 
-//            val selectedJenis = binding.spinJentan.selectedItem.toString()
-//            Log.d("CEKSPINNER1SAVE", "${selectedJenis}, ${spinnerIdJenis[0]}")
-//            val selectedLokasi = binding.spinLokasi.selectedItem.toString()
-//            Log.d("CEKSPINNER2SAVE", "${selectedLokasi}, ${spinnerIdLokasi[0]}")
-            val selectedKegiatan = binding.spinKegiatan.selectedItem.toString()
-            Log.d("CEKSPINNER3SAVE", "${selectedKegiatan}, ${spinnerIdKegiatan[0]}")
-            val selectedSk = binding.spinSk.selectedItem.toString()
-            Log.d("CEKSPINNER4SAVE", "${selectedSk}, ${spinnerIdSk[0]}")
-            val selectedStatus = binding.spinStatus.selectedItem.toString()
-            Log.d("CEKSPINNER5SAVE", "${selectedStatus}, ${spinnerIdStatus[0]}")
-
             if (checkId(id)) {
                 selectedPetak = binding.spinPetak.selectedItem.toString()
-                Log.d("CEK DAS FIELD1", "${selectedPetak}, ${spinnerIdPetak[0]}")
-
                 selectedSkKawasanKerja = binding.spinSkKk.selectedItem.toString()
-                Log.d("CEK DAS FIELD2", "${selectedSkKawasanKerja}, ${spinnerIdSkKawasanKerja[0]}")
-
                 selectedStatusAreaTanam = binding.spinStatusAreaTanam.selectedItem.toString()
-                Log.d(
-                    "CEK DAS FIELD3",
-                    "${selectedStatusAreaTanam}, ${spinnerIdStatusAreaTanam[0]}"
-                )
             } else {
                 selectedPetak = null
                 Log.d("CEK NULL DAS FIELD1", "$selectedPetak")
@@ -299,8 +261,11 @@ class SaveFragment : Fragment() {
             Log.d("isi imageuri", imageUri.toString())
 
             if (longText.isNotEmpty() && langText.isNotEmpty() && elevText.isNotEmpty() &&
-                (selectedKegiatan.isNotEmpty() && selectedKegiatan != spinnerIdKegiatan[0]) && (selectedSk.isNotEmpty() && selectedSk != spinnerIdSk[0]) && (selectedStatus.isNotEmpty() && selectedStatus != spinnerIdStatus[0]) &&
                 tinggiET.isNotEmpty() && diaET.isNotEmpty() && imageUri != null
+                //TODO("BUAT KONDISI AGAR USER TIDAK BISA MENYIMPAN DATA BISA BELUM LENGKAP")
+//                if (longText.isNotEmpty() && langText.isNotEmpty() && elevText.isNotEmpty() &&
+//                    (selectedKegiatan.isNotEmpty() && selectedKegiatan != spinnerIdKegiatan[0]) && (selectedSk.isNotEmpty() && selectedSk != spinnerIdSk[0]) && (selectedStatus.isNotEmpty() && selectedStatus != spinnerIdStatus[0]) &&
+//                    tinggiET.isNotEmpty() && diaET.isNotEmpty() && imageUri != null
             ) {
                 val data = Entity(
                     image = imageUri.toString(),
@@ -308,9 +273,12 @@ class SaveFragment : Fragment() {
 
                     jenTan = selectedJenisId,
                     lokasi = selectedLokasiId,
-                    kegiatan = binding.spinKegiatan.selectedItemId.toInt(),
-                    sk = binding.spinSk.selectedItemId.toInt(),
-                    status = binding.spinStatus.selectedItemId.toInt(),
+                    kegiatan = binding.spinKegiatan.selectedItemId.toInt() + 1,
+                    sk = binding.spinSk.selectedItemId.toInt() + 1,
+                    status = binding.spinStatus.selectedItemId.toInt() + 1,
+                    skKerja = if (checkId(id)) binding.spinSkKk.selectedItemId.toInt() + 1 else null,
+                    statusAreaTanam = if (checkId(id)) binding.spinStatusAreaTanam.selectedItemId.toInt() + 1 else null,
+                    petak = if (checkId(id)) binding.spinPetak.selectedItemId.toInt() + 1 else null,
 
                     tanggalModified = getCurrentDateTime(),
                     tanggal = tanggal,
@@ -400,40 +368,6 @@ class SaveFragment : Fragment() {
         }
     }
 
-    private fun reduceFileSize(file: File, maxWidth: Int, maxHeight: Int): File? {
-        try {
-            // Decode the image file to get its dimensions
-            val options = BitmapFactory.Options().apply {
-                inJustDecodeBounds = true
-            }
-            BitmapFactory.decodeFile(file.absolutePath, options)
-
-            // Calculate the scaling factor
-            val scaleFactor = Math.min(
-                options.outWidth / maxWidth,
-                options.outHeight / maxHeight
-            )
-
-            // Decode the image file into a smaller bitmap
-            options.inJustDecodeBounds = false
-            options.inSampleSize = scaleFactor
-            val resizedBitmap = BitmapFactory.decodeFile(file.absolutePath, options)
-
-            // Create a new file to save the resized bitmap
-            val resizedFile = createCustomTempFile(requireContext())
-
-            // Save the resized bitmap to the new file
-            FileOutputStream(resizedFile).use { out ->
-                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out)
-            }
-
-            return resizedFile
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
     private fun reduceImageAsync(imageFile: File, callback: (File) -> Unit) {
         // Menjalankan kompresi gambar secara asinkron di lifecycleScope
         lifecycleScope.launch(Dispatchers.IO) {
@@ -475,11 +409,9 @@ class SaveFragment : Fragment() {
                     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 dateFormat.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val formattedDate = dateFormat.format(selectedDate.time)
-
                 val dateFormatForTextDisplay = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
                 dateFormatForTextDisplay.timeZone = TimeZone.getTimeZone("GMT+8:00")
                 val dateForTextDisplay = dateFormatForTextDisplay.format(selectedDate.time)
-
                 date = formattedDate
                 binding.tvTanggalisi.text = dateForTextDisplay
             },
