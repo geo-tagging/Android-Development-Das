@@ -70,4 +70,25 @@ interface Dao {
     fun getAllSk(): List<SkEntity>
     @Query("DELETE FROM tb_sk")
     fun deleteSk()
+
+    @Insert
+    suspend fun insertAllSkKerja(lokasi: List<SkKerjaEntity>)
+    @Query("SELECT * FROM tb_skKerja")
+    fun getAllSkKerja(): List<SkKerjaEntity>
+    @Query("DELETE FROM tb_skKerja")
+    fun deleteSkKerja()
+
+    @Insert
+    suspend fun insertAllStatusAreaTanam(lokasi: List<StatusAreaTanamEntity>)
+    @Query("SELECT * FROM tb_status_areaTanam")
+    fun getAllStatusAreaTanam(): List<StatusAreaTanamEntity>
+    @Query("DELETE FROM tb_status_areaTanam")
+    fun deleteStatusAreaTanam()
+
+    @Insert
+    suspend fun insertAllPetak(lokasi: List<PetakEntity>)
+    @Query("SELECT * FROM tb_petak")
+    fun getAllPetak(): List<PetakEntity>
+    @Query("DELETE FROM tb_petak")
+    fun deletePetak()
 }
