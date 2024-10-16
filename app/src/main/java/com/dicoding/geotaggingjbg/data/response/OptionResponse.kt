@@ -49,7 +49,7 @@ data class OptionResponse(
 data class TbPetakUkurItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("id_petak")
 	val idPetak: Int,
@@ -58,13 +58,13 @@ data class TbPetakUkurItem(
 	val petakUkur: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbJenisItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("nama")
 	val nama: String,
@@ -76,7 +76,7 @@ data class TbJenisItem(
 	val kategori: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbLokasiItem(
@@ -85,7 +85,7 @@ data class TbLokasiItem(
 	val idMajor: Int,
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("id_lokasi")
 	val idLokasi: Int,
@@ -100,7 +100,7 @@ data class TbLokasiItem(
 	val region: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbSkItem(
@@ -109,19 +109,19 @@ data class TbSkItem(
 	val skppkh: String,
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("id_sk")
 	val idSk: Int,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbSkKerjaItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("sk_kerja")
 	val skKerja: String,
@@ -130,13 +130,13 @@ data class TbSkKerjaItem(
 	val idSkKerja: Int,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbKegiatanItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("kegiatan")
 	val kegiatan: String,
@@ -145,13 +145,13 @@ data class TbKegiatanItem(
 	val idKegiatan: Int,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbStatusItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("id_status")
 	val idStatus: Int,
@@ -160,7 +160,7 @@ data class TbStatusItem(
 	val status: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbMajorAreaItem(
@@ -169,7 +169,7 @@ data class TbMajorAreaItem(
 	val idMajor: Int,
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("counter")
 	val counter: Int,
@@ -178,13 +178,13 @@ data class TbMajorAreaItem(
 	val instansi: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbActionItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("action")
 	val action: String,
@@ -193,13 +193,13 @@ data class TbActionItem(
 	val idAction: Int,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 data class TbStatusAreaTanamItem(
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("id_statusAreaTanam")
 	val idStatusAreaTanam: Int,
@@ -208,7 +208,7 @@ data class TbStatusAreaTanamItem(
 	val statusAreaTanam: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String
+	val updatedAt: String?
 )
 
 

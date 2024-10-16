@@ -8,8 +8,11 @@ import com.dicoding.geotaggingjbg.data.database.Dao
 import com.dicoding.geotaggingjbg.data.database.JenisEntity
 import com.dicoding.geotaggingjbg.data.database.KegiatanEntity
 import com.dicoding.geotaggingjbg.data.database.LokasiEntity
+import com.dicoding.geotaggingjbg.data.database.PetakEntity
 import com.dicoding.geotaggingjbg.data.database.RemoteEntity
 import com.dicoding.geotaggingjbg.data.database.SkEntity
+import com.dicoding.geotaggingjbg.data.database.SkKerjaEntity
+import com.dicoding.geotaggingjbg.data.database.StatusAreaTanamEntity
 import com.dicoding.geotaggingjbg.data.database.StatusEntity
 import com.dicoding.geotaggingjbg.data.response.DataItem
 import com.dicoding.geotaggingjbg.data.response.DownloadResponse
@@ -38,9 +41,12 @@ class OptionRepository(private val apiService: ApiService, context: Context) {
 
     fun getJenis(): List<JenisEntity> = dao.getAllJenis()
     fun getKegiatan(): List<KegiatanEntity> = dao.getAllKegiatan()
-    suspend fun getLokasi(): List<LokasiEntity> = dao.getAllLokasi()
+    fun getLokasi(): List<LokasiEntity> = dao.getAllLokasi()
     fun getStatus(): List<StatusEntity> = dao.getAllStatus()
     fun getSk(): List<SkEntity> = dao.getAllSk()
+    fun getSkKerja(): List<SkKerjaEntity> = dao.getAllSkKerja()
+    fun getStatusAreaTanam(): List<StatusAreaTanamEntity> = dao.getAllStatusAreaTanam()
+    fun getPetak(): List<PetakEntity> = dao.getAllPetak()
 
     private fun deleteOptionFromDatabase() {
         dao.deleteJenis()
@@ -48,6 +54,9 @@ class OptionRepository(private val apiService: ApiService, context: Context) {
         dao.deleteLokasi()
         dao.deleteStatus()
         dao.deleteSk()
+        dao.deleteSkKerja()
+        dao.deleteStatusAreaTanam()
+        dao.deletePetak()
     }
 
     fun optionToDatabase(token: String,): Call<OptionResponse> {
@@ -64,17 +73,31 @@ class OptionRepository(private val apiService: ApiService, context: Context) {
                     val optionResponse = response.body()
                     if (optionResponse != null) {
                         val jenisEntities = optionResponse.tbJenis.map { it.toEntity() }
+                        Log.d("CEK ERROR","jenisEntities : $jenisEntities")
                         val kegiatanEntities = optionResponse.tbKegiatan.map { it.toEntity() }
+                        Log.d("CEK ERROR","kegiatanEntities : $kegiatanEntities")
                         val lokasiEntities = optionResponse.tbLokasi.map { it.toEntity() }
+                        Log.d("CEK ERROR","lokasiEntities : $lokasiEntities")
                         val statusEntities = optionResponse.tbStatus.map { it.toEntity() }
+                        Log.d("CEK ERROR","statusEntities: $statusEntities")
                         val skEntities = optionResponse.tbSk.map { it.toEntity() }
+                        Log.d("CEK ERROR","skEntities : $skEntities")
+                        val skKerjaEntities = optionResponse.tbSkKerja.map { it.toEntity() }
+                        Log.d("CEK ERROR","skKerjaEntities : $skKerjaEntities")
+                        val statusAreaTanamEntities = optionResponse.tbStatusAreaTanam.map { it.toEntity() }
+                        Log.d("CEK ERROR","statusAreaTanamEntities : $statusAreaTanamEntities")
+                        val petakEntities = optionResponse.tbPetakUkur.map { it.toEntity() }
+                        Log.d("CEK ERROR","petakEntities : $petakEntities")
                         // Menyimpan data ke database lokal menggunakan DAO
                         saveDataToLocalDatabase(
                             jenisEntities,
                             kegiatanEntities,
                             lokasiEntities,
                             statusEntities,
-                            skEntities
+                            skEntities,
+                            skKerjaEntities,
+                            statusAreaTanamEntities,
+                            petakEntities
                         )
                     } else {
                         Log.d("OptionRepository", "Response body is null")
@@ -102,7 +125,10 @@ class OptionRepository(private val apiService: ApiService, context: Context) {
         kegiatanList: List<KegiatanEntity>,
         lokasiList: List<LokasiEntity>,
         statusList: List<StatusEntity>,
-        skList: List<SkEntity>
+        skList: List<SkEntity>,
+        skKerjaList: List<SkKerjaEntity>,
+        statusAreaTanamList: List<StatusAreaTanamEntity>,
+        petakList: List<PetakEntity>
     ) {
         GlobalScope.launch(Dispatchers.IO) {
             deleteOptionFromDatabase()
@@ -111,6 +137,9 @@ class OptionRepository(private val apiService: ApiService, context: Context) {
             dao.insertAllLokasi(lokasiList)
             dao.insertAllStatus(statusList)
             dao.insertAllSk(skList)
+            dao.insertAllSkKerja(skKerjaList)
+            dao.insertAllStatusAreaTanam(statusAreaTanamList)
+            dao.insertAllPetak(petakList)
         }
     }
 

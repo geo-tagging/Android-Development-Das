@@ -93,14 +93,17 @@ class RemoteRepository(private val apiService: ApiService, context: Context) {
             id_lokasi = dataItem.idLokasi,
             id_sk = dataItem.idSk,
             id_status = dataItem.idStatus,
+            id_skKerja = dataItem.idSkKerja,
+            id_statusAreaTanam = dataItem.idStatusAreaTanam,
+            id_petak = dataItem.idPetak,
             tanggal_tanam = dataItem.tanggalTanam,
-            tinggi = dataItem.tinggi.toDouble(),
-            diameter = dataItem.diameter.toDouble(),
-            longitude = dataItem.longitude.toDouble(),
-            latitude = dataItem.latitude.toDouble(),
-            elevasi = dataItem.elevasi.toDouble(),
-            easting = dataItem.easting.toDouble(),
-            northing = dataItem.northing.toDouble(),
+            tinggi = dataItem.tinggi.toDouble() ?: 0.0,
+            diameter = dataItem.diameter.toDouble()?: 0.0,
+            longitude = dataItem.longitude.toDouble()?: 0.0,
+            latitude = dataItem.latitude.toDouble()?: 0.0,
+            elevasi = dataItem.elevasi.toDouble()?: 0.0,
+            easting = dataItem.easting.toDouble()?: 0.0,
+            northing = dataItem.northing.toDouble()?: 0.0,
             images = dataItem.images,
             id_action = dataItem.idAction
         )
@@ -123,36 +126,6 @@ class RemoteRepository(private val apiService: ApiService, context: Context) {
             file
         )
     }
-
-//    suspend fun uploadData(
-//        description: RequestBody, token: String
-//    )= liveData {
-//        emit(ResultState.Loading)
-//        try {
-//            val successResponse = apiService.uploadObject(
-//                "Bearer $token", description)
-//            emit(ResultState.Success(successResponse))
-//        } catch (e: HttpException) {
-//            val errorBody = e.response()?.errorBody()?.string()
-//            val errorResponse = Gson().fromJson(errorBody, UploadResponse::class.java)
-//            emit(ResultState.Error(errorResponse.message))
-//        }
-//    }
-//
-//    suspend fun uploadImage(
-//        file: MultipartBody.Part, token: String
-//    )= liveData {
-//        emit(ResultState.Loading)
-//        try {
-//            val successResponse = apiService.uploadImage(
-//                "Bearer $token", file)
-//            emit(ResultState.Success(successResponse))
-//        } catch (e: HttpException) {
-//            val errorBody = e.response()?.errorBody()?.string()
-//            val errorResponse = Gson().fromJson(errorBody, UploadImageResponse::class.java)
-//            emit(ResultState.Error(errorResponse.message))
-//        }
-//    }
 
     companion object {
         @Volatile
