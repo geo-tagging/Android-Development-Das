@@ -30,6 +30,7 @@ interface ApiService {
         @Query("keyword")keyword: String,
         @Query("orderBy")orderBy: String = "lokasi",
         @Query("sortBy")sortBy: String = "ASC",
+        @Query("instansi") instansi: List<String> = listOf("Rehab DAS", "JBG")
     ): Call<DownloadResponse>
 
     @GET("option")
