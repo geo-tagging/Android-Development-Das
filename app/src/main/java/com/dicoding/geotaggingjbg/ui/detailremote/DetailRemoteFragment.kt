@@ -67,6 +67,7 @@ class DetailRemoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         id = arguments?.getString("SCANNED_DATA")?.toInt() ?: 0
+        Log.d("CEK ID DETAIL REMOTE", "$id")
         viewModel.loadAllDataFromDatabase()
         viewModel.getRemoteData.observe(viewLifecycleOwner) { remoteEntity ->
             showDetail(remoteEntity)
@@ -121,6 +122,7 @@ class DetailRemoteFragment : Fragment() {
     }
 
     private fun showDetail(entity: RemoteEntity) {
+        Log.d("CEK DATA ENTITY ID DETAIL REMOTE", entity.toString())
         entity.apply {
             binding.apply {
                 imageUri = entity.images?.toUri()
