@@ -23,9 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DetailRemoteViewModel(
+    private val repository: Repository,
     private val remoteRepository: RemoteRepository,
     private val optionRepository: OptionRepository,
-    private val repository: Repository,
     id: Int
 ): ViewModel() {
     private val _detailUser = MutableLiveData<RemoteEntity>()

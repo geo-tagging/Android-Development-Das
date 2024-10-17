@@ -51,7 +51,7 @@ class DetailRemoteFragment : Fragment() {
     private val binding get() = _binding!!
     private var _binding: FragmentDetailRemoteBinding? = null
     private val viewModel: DetailRemoteViewModel by viewModels {
-        DetailRemoteViewModelFactory.getInstance(requireContext().applicationContext, id)
+        DetailRemoteViewModelFactory.createFactory(requireActivity(), id)
     }
 
     private var id: Int = 0
