@@ -5,8 +5,6 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,7 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.DatePicker
@@ -30,8 +27,6 @@ import com.dicoding.geotaggingjbg.BuildConfig
 import com.dicoding.geotaggingjbg.R
 import com.dicoding.geotaggingjbg.data.database.Entity
 import com.dicoding.geotaggingjbg.databinding.FragmentSaveBinding
-import com.dicoding.geotaggingjbg.ui.home.HomeViewModel
-import com.dicoding.geotaggingjbg.ui.home.HomeViewModelFactory
 import com.dicoding.geotaggingjbg.ui.utils.createCustomTempFile
 import com.dicoding.geotaggingjbg.ui.utils.reduceFileImage
 import com.dicoding.geotaggingjbg.ui.utils.uriToFile
@@ -42,8 +37,6 @@ import org.osgeo.proj4j.CRSFactory
 import org.osgeo.proj4j.CoordinateTransformFactory
 import org.osgeo.proj4j.ProjCoordinate
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -104,7 +97,6 @@ class SaveFragment : Fragment() {
                         binding.spinSkKk.adapter = adapterSkKerja
                     }
 
-                    // SK
                     viewModel.statusAreaTanamEntity.observe(viewLifecycleOwner) { statusAreaTanamList ->
                         val adapterStatusAreaTanam = ArrayAdapter(
                             requireContext(),
@@ -112,16 +104,6 @@ class SaveFragment : Fragment() {
                             statusAreaTanamList.map { it.statusAreaTanam }
                         )
                         binding.spinStatusAreaTanam.adapter = adapterStatusAreaTanam
-                    }
-
-                    // Status
-                    viewModel.petakList.observe(viewLifecycleOwner) { petakList ->
-                        val adapterPetak = ArrayAdapter(
-                            requireContext(),
-                            R.layout.row_spinner,
-                            petakList.map { it.petakUkur }
-                        )
-                        binding.spinPetak.adapter = adapterPetak
                     }
                 }
             } else {
@@ -196,6 +178,15 @@ class SaveFragment : Fragment() {
             binding.spinStatus.adapter = adapterStatus
         }
 
+        viewModel.petakList.observe(viewLifecycleOwner) { petakList ->
+            val adapterPetak = ArrayAdapter(
+                requireContext(),
+                R.layout.row_spinner,
+                petakList.map { it.petakUkur }
+            )
+            binding.spinPetak.adapter = adapterPetak
+        }
+
         binding.btPilih.setOnClickListener {
             dispatchTakePictureIntent()
         }
@@ -241,28 +232,28 @@ class SaveFragment : Fragment() {
             val diaET = binding.etDia.text.toString()
             val tanggal = date
 
-            var selectedPetak: String?
-            var selectedSkKawasanKerja: String?
-            var selectedStatusAreaTanam: String?
-
-            if (checkId(id)) {
-                selectedPetak = binding.spinPetak.selectedItem.toString()
-                selectedSkKawasanKerja = binding.spinSkKk.selectedItem.toString()
-                selectedStatusAreaTanam = binding.spinStatusAreaTanam.selectedItem.toString()
-            } else {
-                selectedPetak = null
-                Log.d("CEK NULL DAS FIELD1", "$selectedPetak")
-                selectedSkKawasanKerja = null
-                Log.d("CEK NULL DAS FIELD2", "$selectedSkKawasanKerja")
-                selectedStatusAreaTanam = null
-                Log.d("CEK NULL DAS FIELD3", "$selectedStatusAreaTanam")
-            }
+//            var selectedPetak: String?
+//            var selectedSkKawasanKerja: String?
+//            var selectedStatusAreaTanam: String?
+//
+//            if (checkId(id)) {
+//                selectedPetak = binding.spinPetak.selectedItem.toString()
+//                selectedSkKawasanKerja = binding.spinSkKk.selectedItem.toString()
+//                selectedStatusAreaTanam = binding.spinStatusAreaTanam.selectedItem.toString()
+//            } else {
+//                selectedPetak = null
+//                Log.d("CEK NULL DAS FIELD1", "$selectedPetak")
+//                selectedSkKawasanKerja = null
+//                Log.d("CEK NULL DAS FIELD2", "$selectedSkKawasanKerja")
+//                selectedStatusAreaTanam = null
+//                Log.d("CEK NULL DAS FIELD3", "$selectedStatusAreaTanam")
+//            }
 
             Log.d("isi imageuri", imageUri.toString())
 
             if (longText.isNotEmpty() && langText.isNotEmpty() && elevText.isNotEmpty() &&
                 tinggiET.isNotEmpty() && diaET.isNotEmpty() && imageUri != null
-                //TODO("BUAT KONDISI AGAR USER TIDAK BISA MENYIMPAN DATA BISA BELUM LENGKAP")
+            //TODO("BUAT KONDISI AGAR USER TIDAK BISA MENYIMPAN DATA BISA BELUM LENGKAP")
 //                if (longText.isNotEmpty() && langText.isNotEmpty() && elevText.isNotEmpty() &&
 //                    (selectedKegiatan.isNotEmpty() && selectedKegiatan != spinnerIdKegiatan[0]) && (selectedSk.isNotEmpty() && selectedSk != spinnerIdSk[0]) && (selectedStatus.isNotEmpty() && selectedStatus != spinnerIdStatus[0]) &&
 //                    tinggiET.isNotEmpty() && diaET.isNotEmpty() && imageUri != null
@@ -278,7 +269,7 @@ class SaveFragment : Fragment() {
                     status = binding.spinStatus.selectedItemId.toInt() + 1,
                     skKerja = if (checkId(id)) binding.spinSkKk.selectedItemId.toInt() + 1 else null,
                     statusAreaTanam = if (checkId(id)) binding.spinStatusAreaTanam.selectedItemId.toInt() + 1 else null,
-                    petak = if (checkId(id)) binding.spinPetak.selectedItemId.toInt() + 1 else null,
+                    petak = binding.spinPetak.selectedItemId.toInt() + 1,
 
                     tanggalModified = getCurrentDateTime(),
                     tanggal = tanggal,
@@ -303,8 +294,6 @@ class SaveFragment : Fragment() {
     }
 
     private fun showDasField() {
-        binding.tvPetak.visibility = View.VISIBLE
-        binding.spinPetak.visibility = View.VISIBLE
         binding.tvSkKk.visibility = View.VISIBLE
         binding.spinSkKk.visibility = View.VISIBLE
         binding.tvStatusAreaTanam.visibility = View.VISIBLE

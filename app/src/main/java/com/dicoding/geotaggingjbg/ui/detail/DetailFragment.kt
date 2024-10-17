@@ -5,13 +5,10 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,18 +20,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.dicoding.geotaggingjbg.BuildConfig
 import com.dicoding.geotaggingjbg.R
 import com.dicoding.geotaggingjbg.data.database.Entity
 import com.dicoding.geotaggingjbg.databinding.FragmentDetailBinding
-import com.dicoding.geotaggingjbg.databinding.FragmentSaveBinding
-import com.dicoding.geotaggingjbg.ui.home.HomeFragment
-import com.dicoding.geotaggingjbg.ui.save.SaveViewModel
-import com.dicoding.geotaggingjbg.ui.save.SaveViewModelFactory
 import com.dicoding.geotaggingjbg.ui.utils.createCustomTempFile
 import com.dicoding.geotaggingjbg.ui.utils.reduceFileImage
 import com.dicoding.geotaggingjbg.ui.utils.uriToFile
@@ -42,8 +35,6 @@ import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -78,11 +69,11 @@ class DetailFragment : Fragment() {
 
         id = arguments?.getInt("SCANNED_DATA") ?: 0
         //todo: ERROR NULLPOINTEREXEPTION
-        viewModel.getData.observe(viewLifecycleOwner){entity ->
+        viewModel.getData.observe(viewLifecycleOwner) { entity ->
             showDetail(entity)
         }
         //TODO
-        binding.btHapus.setOnClickListener{
+        binding.btHapus.setOnClickListener {
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
             alertDialogBuilder.setTitle("Konfirmasi Hapus Data")
             alertDialogBuilder.setMessage("Apakah anda yakin ingin menghapus data?")
@@ -96,10 +87,10 @@ class DetailFragment : Fragment() {
             alertDialogBuilder.show()
         }
         binding.btSimpan.setOnClickListener {
-            if(imageUri != null){
+            if (imageUri != null) {
                 viewModel.getData.value?.let { entity ->
                     binding.apply {
-                        if (imageUri != null){
+                        if (imageUri != null) {
                             entity.image = imageUri.toString()
                         }
                         entity.tanggal = date
@@ -114,17 +105,17 @@ class DetailFragment : Fragment() {
                         entity.status = spinStatus.selectedItemId.toInt() + 1
                         entity.tinggi = etTinggi.text.toString().toDouble()
                         entity.diameter = etDia.text.toString().toDouble()
-                        entity.skKerja = if (checkId(id.toString())) binding.spinSkKk.selectedItemId.toInt() + 1 else null
-                        entity.statusAreaTanam = if (checkId(id.toString())) binding.spinStatusAreaTanam.selectedItemId.toInt() + 1 else null
-                        entity.petak = if (checkId(id.toString())) binding.spinPetak.selectedItemId.toInt() + 1 else null
+                        entity.skKerja = if (checkId(id.toString())) spinSkKk.selectedItemId.toInt() + 1 else null
+                        entity.statusAreaTanam = if (checkId(id.toString())) spinStatusAreaTanam.selectedItemId.toInt() + 1 else null
+                        entity.petak = spinPetak.selectedItemId.toInt() + 1
                         Log.d("Entity null", entity.toString())
                         viewModel.updateData(entity)
                     }
                 }
                 showToast("Update data berhasil")
                 it.findNavController().navigate(R.id.action_navigation_detail_to_navigation_home)
-            } else{
-            showToast("Harap ambil gambar terlebih dahulu!")
+            } else {
+                showToast("Harap ambil gambar terlebih dahulu!")
             }
         }
 
@@ -132,11 +123,11 @@ class DetailFragment : Fragment() {
             dispatchTakePictureIntent()
         }
 
-        binding.ivClose.setOnClickListener{
+        binding.ivClose.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        binding.iconDate.setOnClickListener{
+        binding.iconDate.setOnClickListener {
             showDatePickerDialog()
         }
     }
@@ -235,6 +226,20 @@ class DetailFragment : Fragment() {
                     }
                 }
 
+                viewModel.petakList.observe(viewLifecycleOwner) { petakList ->
+                    val adapterPetak = ArrayAdapter(
+                        requireContext(),
+                        R.layout.row_spinner,
+                        petakList.map { it.petakUkur }
+                    )
+                    binding.spinPetak.adapter = adapterPetak
+
+                    val indexPetak = petakList.indexOfFirst { it.id == petakId }
+                    if (indexPetak >= 0) {
+                        binding.spinPetak.setSelection(indexPetak)
+                    }
+                }
+
                 cvImagePreview.setImageURI(imageUri)
                 tvIdisi.text = id.toString()
                 tvTanggalisi.text = date?.let { parseDate(it) }
@@ -269,7 +274,6 @@ class DetailFragment : Fragment() {
                             }
                         }
 
-                        // SK
                         viewModel.statusAreaTanamEntity.observe(viewLifecycleOwner) { statusAreaTanamList ->
                             val adapterStatusAreaTanam = ArrayAdapter(
                                 requireContext(),
@@ -283,21 +287,6 @@ class DetailFragment : Fragment() {
                                 binding.spinStatusAreaTanam.setSelection(indexStatusAreaTanam)
                             }
                         }
-
-                        // Status
-                        viewModel.petakList.observe(viewLifecycleOwner) { petakList ->
-                            val adapterPetak = ArrayAdapter(
-                                requireContext(),
-                                R.layout.row_spinner,
-                                petakList.map { it.petakUkur }
-                            )
-                            binding.spinPetak.adapter = adapterPetak
-
-                            val indexPetak = petakList.indexOfFirst { it.id == petakId }
-                            if (indexPetak >= 0) {
-                                binding.spinPetak.setSelection(indexPetak)
-                            }
-                        }
                     }
                 } else {
                     Log.d("CEK FIRST CHAR OF ID DETAIL3", "ID is empty.")
@@ -307,16 +296,14 @@ class DetailFragment : Fragment() {
     }
 
     private fun showDasField() {
-        binding.tvPetak.visibility = View.VISIBLE
-        binding.spinPetak.visibility = View.VISIBLE
         binding.tvSkKk.visibility = View.VISIBLE
         binding.spinSkKk.visibility = View.VISIBLE
         binding.tvStatusAreaTanam.visibility = View.VISIBLE
         binding.spinStatusAreaTanam.visibility = View.VISIBLE
     }
 
-    private fun checkId(id: String) : Boolean {
-        val isDas : Boolean = id.first() == '1'
+    private fun checkId(id: String): Boolean {
+        val isDas: Boolean = id.first() == '1'
         return isDas
     }
 

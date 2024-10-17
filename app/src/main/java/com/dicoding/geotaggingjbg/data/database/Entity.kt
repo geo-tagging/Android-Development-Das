@@ -23,7 +23,7 @@ data class Entity(
     @ColumnInfo(name = "kegiatan")
     var kegiatan: Int = 0,
     @ColumnInfo(name = "petak")
-    var petak: Int? = null,
+    var petak: Int = 0,
     @ColumnInfo(name = "sk")
     var sk: Int = 0,
     @ColumnInfo(name = "skKerja")
