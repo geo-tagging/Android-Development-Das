@@ -68,6 +68,7 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         id = arguments?.getInt("SCANNED_DATA") ?: 0
+        Log.d("CEK ID DETAIL", "$id")
         //todo: ERROR NULLPOINTEREXEPTION
         viewModel.getData.observe(viewLifecycleOwner) { entity ->
             showDetail(entity)
@@ -133,6 +134,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun showDetail(entity: Entity) {
+        Log.d("CEK DATA ENTITY ID DETAIL", entity.toString())
         entity.apply {
             binding.apply {
                 imageUri = entity.image?.toUri()

@@ -109,10 +109,10 @@ class HomeFragment : Fragment() {
                     val bundle = Bundle().apply {
                         putInt("SCANNED_DATA", data.id)
                     }
+                    Log.d("CEK ID HOME", "${data.id}")
                     val detailFragment = DetailFragment()
                     detailFragment.arguments = bundle
-                    requireView().findNavController()
-                        .navigate(R.id.action_navigation_home_to_navigation_detail, bundle)
+                    requireView().findNavController().navigate(R.id.action_navigation_home_to_navigation_detail, bundle)
                 }
             })
 
