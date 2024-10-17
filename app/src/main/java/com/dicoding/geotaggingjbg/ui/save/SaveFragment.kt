@@ -79,7 +79,7 @@ class SaveFragment : Fragment() {
         viewModel.loadAllDataFromDatabase()
 
         if (arguments != null) {
-            id = arguments?.getString("SCANNED_DATA", "ID").toString()
+            id = arguments?.getInt("SCANNED_DATA", 0).toString()
             Log.d("CEK FIRST CHAR OF ID SAVE1", id)
 
             if (id.isNotEmpty()) {
@@ -196,7 +196,7 @@ class SaveFragment : Fragment() {
         }
 
         if (arguments != null) {
-            id = arguments?.getString("SCANNED_DATA", "ID").toString()
+            id = arguments?.getInt("SCANNED_DATA", 0).toString()
             binding.tvIdisi.text = id
 
             // Mendapatkan data longitude, latitude, dan elevasi dari Bundle
@@ -231,23 +231,6 @@ class SaveFragment : Fragment() {
             val tinggiET = binding.etTinggi.text.toString()
             val diaET = binding.etDia.text.toString()
             val tanggal = date
-
-//            var selectedPetak: String?
-//            var selectedSkKawasanKerja: String?
-//            var selectedStatusAreaTanam: String?
-//
-//            if (checkId(id)) {
-//                selectedPetak = binding.spinPetak.selectedItem.toString()
-//                selectedSkKawasanKerja = binding.spinSkKk.selectedItem.toString()
-//                selectedStatusAreaTanam = binding.spinStatusAreaTanam.selectedItem.toString()
-//            } else {
-//                selectedPetak = null
-//                Log.d("CEK NULL DAS FIELD1", "$selectedPetak")
-//                selectedSkKawasanKerja = null
-//                Log.d("CEK NULL DAS FIELD2", "$selectedSkKawasanKerja")
-//                selectedStatusAreaTanam = null
-//                Log.d("CEK NULL DAS FIELD3", "$selectedStatusAreaTanam")
-//            }
 
             Log.d("isi imageuri", imageUri.toString())
 

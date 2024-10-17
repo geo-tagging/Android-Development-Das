@@ -181,7 +181,7 @@ class CameraFragment : Fragment() {
         Log.d("CEK FIRST CHAR OF ID1", "QR Code: $contents")
         Log.d("CEK FIRST CHAR OF ID2", "${contents.first()}")
         val bundle = Bundle().apply {
-            putString("SCANNED_DATA", contents)
+            putInt("SCANNED_DATA", contents.toInt())
             putAll(_locationBundle)
         }
         showFragment(bundle)

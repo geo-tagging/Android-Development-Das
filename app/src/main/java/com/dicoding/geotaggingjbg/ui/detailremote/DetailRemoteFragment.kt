@@ -66,7 +66,7 @@ class DetailRemoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        id = arguments?.getString("SCANNED_DATA")?.toInt() ?: 0
+        id = arguments?.getInt("SCANNED_DATA") ?: 0
         Log.d("CEK ID DETAIL REMOTE", "$id")
         viewModel.loadAllDataFromDatabase()
         viewModel.getRemoteData.observe(viewLifecycleOwner) { remoteEntity ->
