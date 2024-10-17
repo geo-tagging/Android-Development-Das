@@ -22,8 +22,8 @@ import kotlinx.coroutines.withContext
 
 class DetailViewModel(
     private val repository: Repository,
-    id: Int,
-    private val optionRepository: OptionRepository
+    private val optionRepository: OptionRepository,
+    id: Int
 ): ViewModel() {
     private val _detailUser = MutableLiveData<Entity>()
     var detailUser: LiveData<Entity> = _detailUser

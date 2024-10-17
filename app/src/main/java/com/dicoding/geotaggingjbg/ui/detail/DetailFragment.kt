@@ -51,7 +51,7 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
     private var _binding: FragmentDetailBinding? = null
     private val viewModel: DetailViewModel by viewModels {
-        DetailViewModelFactory.getInstance(requireContext().applicationContext, id)
+        DetailViewModelFactory.createFactory(requireActivity(), id)
     }
 
     private var id: Int = 0
@@ -69,11 +69,10 @@ class DetailFragment : Fragment() {
 
         id = arguments?.getInt("SCANNED_DATA") ?: 0
         Log.d("CEK ID DETAIL", "$id")
-        //todo: ERROR NULLPOINTEREXEPTION
+        //TODO: Error NullPointerExcp ketika scan data lama
         viewModel.getData.observe(viewLifecycleOwner) { entity ->
             showDetail(entity)
         }
-        //TODO
         binding.btHapus.setOnClickListener {
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
             alertDialogBuilder.setTitle("Konfirmasi Hapus Data")
